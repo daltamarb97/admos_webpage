@@ -1,0 +1,30 @@
+<div mat-dialog-content>
+  <div *ngIf="action != 'Delete'; else elseTemplate">
+
+      <mat-form-field>
+          <input type="number" placeholder="apto/oficina/casa" matInput [(ngModel)]="local_data.facility_number">
+        </mat-form-field>
+      
+        <mat-form-field>
+          <input type="email" placeholder="email asociado" matInput [(ngModel)]="local_data.email">
+        </mat-form-field>
+      
+        <mat-form-field>
+          <input type="number" placeholder="telefono asociado" matInput [(ngModel)]="local_data.phone">
+        </mat-form-field>
+      
+        <mat-form-field>
+          <input type="number" placeholder="valor de cuota admin" matInput [(ngModel)]="local_data.amount_to_pay">
+        </mat-form-field>
+
+  </div>
+
+  <ng-template #elseTemplate>
+    ¿Estás seguro de eliminar la información del apto/oficina/casa: <b>{{local_data.facility_number}}</b>?
+  </ng-template>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="doAction()">{{action}}</button>
+  <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+</div>
