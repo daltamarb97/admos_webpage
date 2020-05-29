@@ -15,7 +15,6 @@ import { AppSidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DemoMaterialModule } from './demo-material-module';
-import { AuthModule } from './auth/auth.module';
 
 import { SharedModule } from './shared/shared.module';
 import { SpinnerComponent } from './shared/spinner.component';
@@ -47,7 +46,6 @@ import { AngularFireStorageModule } from '@angular/fire/storage'
     FlexLayoutModule,
     HttpClientModule,
     SharedModule,
-    AuthModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,

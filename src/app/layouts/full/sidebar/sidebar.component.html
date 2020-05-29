@@ -28,9 +28,10 @@
             <span>{{ menuitem.name }}</span> 
             <span fxFlex></span> 
             <span class="label label-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span> 
-        </a>
-
-        
+        </a>  
+    </mat-list-item>
+    <mat-list-item>
+        <button (click)="logOut()">Cerrar Sesión</button>
     </mat-list-item>
 
 </mat-nav-list>

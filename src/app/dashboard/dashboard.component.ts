@@ -54,7 +54,8 @@ export class DashboardComponent implements OnInit {
 
       
       this.getCurrentPaymentDay();
-      this.getInitialTableData();  
+      this.getInitialTableData(); 
+
     }
 
 
