@@ -2,7 +2,7 @@
 
         <mat-card class="box">
           <mat-card-header>
-            <mat-card-title>Registrate</mat-card-title>
+            <mat-card-title>Inicia Sesión</mat-card-title>
           </mat-card-header>
       
           <form class="example-form" [formGroup]="loginForm" (ngSubmit)="logIn($event)">
@@ -18,7 +18,7 @@
                 </mat-form-field>
     
             </mat-card-content>
-            <button mat-stroked-button [disabled]="loginForm.invalid" color="accent" class="btn-block">Resgitrarme</button>
+            <button mat-stroked-button [disabled]="loginForm.invalid" color="accent" class="btn-block">Ingresar</button>
           </form>
 
           <p>¿Aún no tienes cuenta? <a [routerLink]="['/auth', 'signup']"><span style="color:primary">Regístrate Aquí</span></a></p>

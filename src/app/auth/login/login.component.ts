@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
         // get user info to check isAdmin property
         this.fetchData.getUserInfo(result.user.uid)
         .subscribe((user)=>{
-          this.user = user
+          this.user = user.data();
           if(this.user.isAdmin !== true){
             // if user is not admin automatically log them out in order to execute guards
             alert('sólo puedes ingresar si tienes perfil de administrador')
