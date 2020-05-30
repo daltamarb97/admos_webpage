@@ -8,7 +8,9 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminGuardService implements CanActivate {
+
+
+export class CurrentUserGuard implements CanActivate {
 
   constructor(
     private authService: AuthService,
@@ -25,8 +27,10 @@ export class AdminGuardService implements CanActivate {
         if (!hasUser) {
           this.router.navigate(['/auth/login']);
         }
-      }),
+      })
     );
   }
 
 }
+
+

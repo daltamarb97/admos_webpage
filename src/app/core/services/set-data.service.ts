@@ -74,5 +74,55 @@ export class SetDataService {
       }, 3000);
     })
   }
+
+
+  setNewBuilding(buildingData, adminData, adminId){
+    // set the building inf
+    let ref = this.db.collection('buildings')
+
+    return ref.add(buildingData).then((docRef)=>{
+      let buildingId = docRef.id;
+      ref.doc(buildingId).update({
+        buildingId: buildingId
+      }).then(()=>{
+        // creates user with admin roperty 
+        this.createNewAdminUser(adminData, adminId, buildingId);
+      })
+    })
+  }
+
+
+  private createNewAdminUser(data, userId, buildingId){
+    // set new user with admin property on webpage register
+    let ref = this.db.collection('users')
+    .doc(userId)
+
+    return ref.set(data).then(()=>{
+      // set additional user data
+      ref.update({
+        userId: userId,
+        isAdmin: true
+      }).then(()=>{
+        // set associated buildingId to that user
+        ref.collection('buildings')
+        .doc(buildingId)
+        .set({
+          buildingId: buildingId
+        }).then(()=>{          
+          // relationate adminId with its specific building
+          let buildingRef = this.db.collection('buildings')
+            .doc(buildingId);
+
+            buildingRef.update({
+              adminId: userId
+            })
+        })
+      })
+    }).catch(err =>{
+      console.log(err);
+      
+    })
+  }
+
   
 }

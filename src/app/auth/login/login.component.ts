@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 // services
 import { AuthService } from '../../core/services/auth.service';
+import { FecthDataService } from '../../core/services/fecth-data.service';
 
 
 @Component({
@@ -14,12 +15,14 @@ import { AuthService } from '../../core/services/auth.service';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
+  user:any;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     // services
-    private authService: AuthService
+    private authService: AuthService,
+    private fetchData: FecthDataService
   ) { 
     this.buildForm();
   }
@@ -34,17 +37,35 @@ export class LoginComponent implements OnInit {
       const formValue = this.loginForm.value;
       this.authService.logIn(formValue.email, formValue.password)
       .then((result)=>{
-        // email verification required
-        if(result.user.emailVerified !== true){
-          alert('por favor verifica el correo de la administración para ingresar')
-        }else{
-          this.router.navigate(['/'])
-          console.log(result.user);
-          
-        }
+        // get user info to check isAdmin property
+        this.fetchData.getUserInfo(result.user.uid)
+        .subscribe((user)=>{
+          this.user = user
+          if(this.user.isAdmin !== true){
+            // if user is not admin automatically log them out in order to execute guards
+            alert('sólo puedes ingresar si tienes perfil de administrador')
+            this.authService.logOut();
+          }else if(result.user.emailVerified !== true){
+            // email verification required
+            alert('por favor verifica el correo de la administración para ingresar');
+          }else{
+            // allow user to login
+            this.router.navigate(['/'])
+            console.log(result.user);  
+          }
+        })
       }).catch(error =>{
-        // incorrect credentials logic
-        alert('email o contraseña incorrectos');
+        // incorrect credentials
+        if(
+          error.code === "auth/wrong-password" || 
+          error.code === "auth/user-not-found" ||
+          error.code === "auth/invalid-email" 
+        ){
+          alert('email o contraseña incorrectos');
+        }else{
+          console.log(error);
+          alert('ocurrió un problema, contáctanos a xxxxx@gmail.com');
+        }
       })
     }
   } 

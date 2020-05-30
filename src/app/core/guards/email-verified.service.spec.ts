@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AdminGuardService } from './admin-guard.service';
+import { EmailVerifiedService } from './email-verified.service';
 
-describe('AdminGuardService', () => {
-  let service: AdminGuardService;
+describe('EmailVerifiedService', () => {
+  let service: EmailVerifiedService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AdminGuardService);
+    service = TestBed.inject(EmailVerifiedService);
   });
 
   it('should be created', () => {

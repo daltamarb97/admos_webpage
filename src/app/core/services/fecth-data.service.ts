@@ -28,8 +28,18 @@ export class FecthDataService {
 
 
   getColumnNames(){
+    // get metadata of table payments
     let ref = this.db.collection('payments_metadata')
     .doc('col_names')
+
+    return ref.get();
+  }
+
+
+  getUserInfo(userId){
+    // get user profile info
+    let ref = this.db.collection('users')
+    .doc(userId)
 
     return ref.get();
   }

@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 
 // services
 import { AuthService } from '../../core/services/auth.service';
+import { SetDataService } from '../../core/services/set-data.service';
+import { AngularFireAuth } from '@angular/fire/auth';
+
 
 
 @Component({
@@ -18,8 +21,10 @@ export class SignUpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private afa: AngularFireAuth,
     // services
-    private authService: AuthService
+    private authService: AuthService,
+    private setDataService: SetDataService
   ) { 
     this.buildForm();
   }
@@ -34,11 +39,29 @@ export class SignUpComponent implements OnInit {
       const formValue = this.form.value;
       this.authService.signUp(formValue.email, formValue.password)
       .then(()=>{
-        this.router.navigate(['/login'])
-      })
-    }
+        // get last registered user from firebase Auth
+        this.afa.onAuthStateChanged((user)=>{
+          if(user){
+            const buildingData = {
+              name: this.form.get('buildingName').value,
+              address: this.form.get('buildingAddr').value,
+            }
     
+            const adminData = {
+              name: this.form.get('adminName').value,
+              id: this.form.get('adminId').value,
+              email: this.form.get('email').value,
+            }
+          
+            
+            this.setDataService.setNewBuilding(buildingData, adminData, user.uid);
+            this.router.navigate(['/auth/login'])
+          }
+        })
+      })
+    } 
   }
+
 
   private buildForm(){
     // Creation of the registration formBuilder

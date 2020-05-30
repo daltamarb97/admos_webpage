@@ -3,7 +3,10 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { FullComponent } from './layouts/full/full.component';
 import { AppComponent } from './app.component';
-import { AdminGuardService } from './core/guards/admin-guard.service';
+
+// guards
+import {  EmailVerifiedGuardService } from './core/guards/email-verified.service';
+import { CurrentUserGuard } from './core/guards/current-user-guard.service';
 
 
 export const AppRoutes: Routes = [
@@ -18,7 +21,10 @@ export const AppRoutes: Routes = [
       },
       {
         path: 'tabla-pagos',
-        canActivate: [AdminGuardService],
+        canActivate: [
+          CurrentUserGuard,
+          EmailVerifiedGuardService
+        ],
         loadChildren: 
           () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       }
