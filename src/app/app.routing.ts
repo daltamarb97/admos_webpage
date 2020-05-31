@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { FullComponent } from './layouts/full/full.component';
-import { AppComponent } from './app.component';
 
 // guards
 import {  EmailVerifiedGuardService } from './core/guards/email-verified.service';
@@ -27,12 +26,16 @@ export const AppRoutes: Routes = [
         ],
         loadChildren: 
           () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
-      }
+      },
+      {
+        path: 'canales-comunicacion',
+        loadChildren:
+          () => import('./comunications/comunications.module').then(m => m.ComunicationsModule)
+      },
     ]
   },
   {
     path: 'auth',
-    component: AppComponent,
     loadChildren:
       () => import('./auth/auth.module').then(m => m.AuthModule)
   },
