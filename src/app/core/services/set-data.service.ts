@@ -101,7 +101,8 @@ export class SetDataService {
       // set additional user data
       ref.update({
         userId: userId,
-        isAdmin: true
+        isAdmin: true,
+        activeBuilding: buildingId
       }).then(()=>{
         // set associated buildingId to that user
         ref.collection('buildings')

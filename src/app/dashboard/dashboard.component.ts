@@ -4,18 +4,16 @@ import {MatTableDataSource, MatDialog} from '@angular/material';
 import { FecthDataService } from '../core/services/fecth-data.service';
 import { SetDataService } from '../core/services/set-data.service';
 
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import * as XLSX from 'xlsx';
 
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
+import { AuthService } from '../core/services/auth.service';
 
 
-declare var require: any;
-
-const data: any = require('./data.json');
 
 @Component({
     selector: 'app-dashboard',
@@ -34,12 +32,15 @@ export class DashboardComponent implements OnInit {
       28, 29, 30, 31];
     firebaseDay:number;
     showSpinner:boolean = false;
+    userId: string;
+    user:any;  // userInfo variable
 
     constructor(
       // services
       private fetchData: FecthDataService,
       private setData: SetDataService,
       private deleteData: DeleteDataService,
+      private authService: AuthService,
       // UI components
       public dialog: MatDialog
     ){ 
@@ -50,12 +51,13 @@ export class DashboardComponent implements OnInit {
     displayedColumns: string[] = [];
     dataSource = new MatTableDataSource([]);
 
+
     ngOnInit() {
-
-      
-      this.getCurrentPaymentDay();
-      this.getInitialTableData(); 
-
+      this.authService.getCurrentUser()
+      .subscribe(user => {
+        this.userId = user.uid; 
+        this.getUserInfo();
+      });
     }
 
 
@@ -65,10 +67,35 @@ export class DashboardComponent implements OnInit {
     }
 
 
+    
+    getColumnNames(){
+      // get column names dynamically
+      this.fetchData.getColumnNames().subscribe((data)=>{
+        let obj = data.data()
+        Object.getOwnPropertyNames(obj).forEach((col)=>{
+          this.displayedColumns.push(obj[col]);
+        })
+      })
+    }
+
+
+    getUserInfo(){
+      // get user Info to be used
+      this.fetchData.getUserInfo(this.userId)
+      .subscribe(user=>{
+        this.user = user.data();
+
+        // Execute functions that rely on userInfo data 
+        this.getCurrentPaymentDay();
+        this.getInitialTableData(); 
+      })
+    }
+
+
     getInitialTableData(){
       // get current table data on init
       this.fetchData.getTableData(
-        '0znjWEc1MXi9aX9BzMl5',
+        this.user.activeBuilding,
       ).pipe(
         takeUntil(this.destroy$)
       ).subscribe(data => {  
@@ -81,21 +108,10 @@ export class DashboardComponent implements OnInit {
 
     getCurrentPaymentDay(){
       // get current payment day from firebase
-      this.fetchData.getPaymentDay('0znjWEc1MXi9aX9BzMl5')
+      this.fetchData.getPaymentDay(this.user.activeBuilding)
       .subscribe((day)=>{
         let paymentDay = day.data().payment_day;
         this.firebaseDay = paymentDay;
-      })
-    }
-
-
-    getColumnNames(){
-      // get column names dynamically
-      this.fetchData.getColumnNames().subscribe((data)=>{
-        let obj = data.data()
-        Object.getOwnPropertyNames(obj).forEach((col)=>{
-          this.displayedColumns.push(obj[col]);
-        })
       })
     }
 
@@ -120,7 +136,7 @@ export class DashboardComponent implements OnInit {
           
           // set read data to firebase 
           for(let row of this.filelist){
-            this.setData.setTableData('0znjWEc1MXi9aX9BzMl5', row)
+            this.setData.setTableData(this.user.activeBuilding, row)
             .then(()=>{
               console.log('data in firebase');
               
@@ -153,32 +169,32 @@ export class DashboardComponent implements OnInit {
 
     updateRowData(data){
       // update firebase info for that specific row
-      this.setData.updateSingleRow('0znjWEc1MXi9aX9BzMl5', data.rowId, data)
+      this.setData.updateSingleRow(this.user.activeBuilding, data.rowId, data)
     }
 
 
     deleteRowData(data){
       // delete data of specific row from firebase
-      this.deleteData.deleteSingleTableRow('0znjWEc1MXi9aX9BzMl5', data.rowId)
+      this.deleteData.deleteSingleTableRow(this.user.activeBuilding, data.rowId)
     }
 
 
     setRowData(data){
       // Set row data manually
-      this.setData.setTableData('0znjWEc1MXi9aX9BzMl5', data)
+      this.setData.setTableData(this.user.activeBuilding, data)
     }
 
 
     setNewPaymentDay(event){
       // set/update payment day
-      this.setData.setPaymentDay('0znjWEc1MXi9aX9BzMl5', event.value);
+      this.setData.setPaymentDay(this.user.activeBuilding, event.value);
     }
 
     
     sendPaymentRemainderEmail(data){
       // send automatic reminder email by event
       this.showSpinner = true;
-      this.setData.setFirestoreTriggerPaymentEmail('0znjWEc1MXi9aX9BzMl5', data.rowId);
+      this.setData.setFirestoreTriggerPaymentEmail(this.user.activeBuilding, data.rowId);
       setTimeout(() => {
         this.showSpinner = false;
         console.log('deberia desaparecer el spinner');

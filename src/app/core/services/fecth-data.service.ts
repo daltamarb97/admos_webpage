@@ -5,6 +5,9 @@ import { AngularFirestore } from '@angular/fire/firestore';
   providedIn: 'root'
 })
 export class FecthDataService {
+
+  userInfo:object;
+  
   constructor(private db: AngularFirestore) {
     
    }
