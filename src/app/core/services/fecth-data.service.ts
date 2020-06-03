@@ -12,7 +12,15 @@ export class FecthDataService {
     
    }
 
-  
+
+   getUserInfo(userId){
+    // get user profile info
+    let ref = this.db.collection('users')
+    .doc(userId)
+
+    return ref.get();
+  }
+
  
   getTableData(buildingId){
      // get payment table's data 
@@ -39,12 +47,13 @@ export class FecthDataService {
   }
 
 
-  getUserInfo(userId){
-    // get user profile info
-    let ref = this.db.collection('users')
-    .doc(userId)
+  getChatRooms(buildingId){
+    // getting chatrooms info
+    let ref = this.db.collection('chats')
+    .doc(buildingId)
+    .collection('rooms')
 
-    return ref.get();
+    return ref.stateChanges(['added']);
   }
 
 

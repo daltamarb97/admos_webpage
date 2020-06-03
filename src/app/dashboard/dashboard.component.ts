@@ -67,7 +67,6 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    
     getColumnNames(){
       // get column names dynamically
       this.fetchData.getColumnNames().subscribe((data)=>{
@@ -84,7 +83,8 @@ export class DashboardComponent implements OnInit {
       this.fetchData.getUserInfo(this.userId)
       .subscribe(user=>{
         this.user = user.data();
-
+        // assign userInfo value to global variable
+        this.authService.userInfo = this.user;
         // Execute functions that rely on userInfo data 
         this.getCurrentPaymentDay();
         this.getInitialTableData(); 

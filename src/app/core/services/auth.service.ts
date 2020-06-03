@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
+  
+  userInfo:any;  // User info global variable
 
   constructor(
     private afa: AngularFireAuth

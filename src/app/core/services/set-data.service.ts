@@ -87,6 +87,8 @@ export class SetDataService {
       }).then(()=>{
         // creates user with admin roperty 
         this.createNewAdminUser(adminData, adminId, buildingId);
+        // creates default chatRoom for this building
+        this.createDefaultChatRoom(buildingId, buildingData.name);
       })
     })
   }
@@ -122,6 +124,30 @@ export class SetDataService {
     }).catch(err =>{
       console.log(err);
       
+    })
+  }
+
+
+  createDefaultChatRoom(buildingId, buildingName){
+    // creates building chats db ref and default chat room
+    let ref = this.db.collection('chats')
+    .doc(buildingId)
+
+    return ref.set({
+      buildingId: buildingId,
+      buildingName: buildingName
+    }).then(()=>{
+      ref.collection('rooms')
+      .add({
+        roomName: 'General' 
+      }).then(docRef =>{
+        const roomId = docRef.id;
+        ref.collection('rooms')
+        .doc(roomId)
+        .update({
+          roomId: roomId
+        })
+      })
     })
   }
 

@@ -2,7 +2,14 @@
     <mat-sidenav opened mode="side">
         <div>
             <h6>Salas de Chat</h6>
-            <mat-card>Simple card</mat-card>
+            <div *ngFor="let room of chatRooms">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{room.roomName}}</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+            </div>
+  
         </div>
         
         <div>
@@ -10,6 +17,6 @@
             <mat-card>Simple card</mat-card>
         </div>
     </mat-sidenav>
-    <mat-sidenav opened mode="side" position="end">End content</mat-sidenav>
-    Implicit main content
+    <mat-sidenav opened mode="side" position="end">caracteristicas de sala</mat-sidenav>
+    CHAT
 </mat-sidenav-container>
