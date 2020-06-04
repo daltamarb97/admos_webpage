@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Configuración de sala de chat</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input type="text" placeholder="Nombre de la sala de chat" matInput [(ngModel)]="local_data.name">
+  </mat-form-field>
+
+<mat-form-field>
+    <input type="text" placeholder="Descrpción de la sala de chat" matInput [(ngModel)]="local_data.description">
+  </mat-form-field>
+
+<mat-form-field>
+    <mat-label>Toppings</mat-label>
+    <mat-select [(ngModel)]="local_data.participants" multiple>
+      <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button mat-flat-button color="warn" (click)="createChatRoom()">Continuar</button>
+</div>

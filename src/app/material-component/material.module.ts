@@ -13,6 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialRoutes } from './material.routing';
 
 import { DialogOverviewComponent} from './dialog/dialog.component';
+import { ChatCreationDialogComponent } from './chat-creation-dialog/chat-creation-dialog.component';
 
 @NgModule({
   imports: [
@@ -26,9 +27,10 @@ import { DialogOverviewComponent} from './dialog/dialog.component';
     CdkTableModule
   ],
   providers: [],
-  entryComponents: [DialogOverviewComponent],
+  entryComponents: [DialogOverviewComponent, ChatCreationDialogComponent],
   declarations: [
     DialogOverviewComponent,
+    ChatCreationDialogComponent,
   ]
 })
 export class MaterialComponentsModule {}

@@ -19,6 +19,11 @@ export const AppRoutes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: '',
+        loadChildren: 
+          () => import('./material-component/material.module').then(m => m.MaterialComponentsModule)
+      },
+      {
         path: 'tabla-pagos',
         canActivate: [
           CurrentUserGuard,

@@ -9,7 +9,8 @@ export class SetDataService {
   constructor(private db: AngularFirestore) { }
 
 
-  
+  // PAYMENTS TABLE SERVICES
+
   setTableData(buildingId, data){
     // set data to a specific payment table using Excel
     let ref = this.db.collection('payment_tables/')
@@ -41,10 +42,10 @@ export class SetDataService {
 
   setPaymentDay(buildingId, paymentDay){
     // set or update payment day
-    let ref = this.db.collection('buildings/')
+    let ref = this.db.collection('buildings')
     .doc(buildingId)
 
-    ref.set({
+    ref.update({
       payment_day: paymentDay
     }).then(()=>{
       console.log('payment day successfully updated');
@@ -75,6 +76,11 @@ export class SetDataService {
     })
   }
 
+  // END OF PAYMENTS TABLE SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+  // USER CREATION SERVICES
 
   setNewBuilding(buildingData, adminData, adminId){
     // set the building inf
@@ -88,7 +94,15 @@ export class SetDataService {
         // creates user with admin roperty 
         this.createNewAdminUser(adminData, adminId, buildingId);
         // creates default chatRoom for this building
-        this.createDefaultChatRoom(buildingId, buildingData.name);
+        // General is the default chat room
+        this.createChatRoom(
+          buildingId, 
+          buildingData.name, 
+          {roomName: 'General', 
+          roomDescription: 'Sala de chat dónde todos los miembros del edificio estan automáticamente'
+          }, 
+          adminId
+        );
       })
     })
   }
@@ -106,7 +120,7 @@ export class SetDataService {
         isAdmin: true,
         activeBuilding: buildingId
       }).then(()=>{
-        // set associated buildingId to that user
+        // set associated buildingId to that admin user
         ref.collection('buildings')
         .doc(buildingId)
         .set({
@@ -127,8 +141,13 @@ export class SetDataService {
     })
   }
 
+  // END USER CREATION SERVICES
 
-  createDefaultChatRoom(buildingId, buildingName){
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+  // CHATS AND COMUNICATIONS SERVICES
+
+  createChatRoom(buildingId:string, buildingName:string, roomData:any, userId:string){
     // creates building chats db ref and default chat room
     let ref = this.db.collection('chats')
     .doc(buildingId)
@@ -139,17 +158,38 @@ export class SetDataService {
     }).then(()=>{
       ref.collection('rooms')
       .add({
-        roomName: 'General' 
+        roomName: roomData.roomName,
+        roomDescription: roomData.roomDescription,
       }).then(docRef =>{
         const roomId = docRef.id;
         ref.collection('rooms')
         .doc(roomId)
         .update({
           roomId: roomId
+        }).then(()=>{
+          this.setChatRoomInfoInUser(userId, roomId, roomData.roomName);
         })
       })
     })
   }
 
+
+  private setChatRoomInfoInUser(userId, roomId, roomName){
+    // link chat room to user
+    // (General) is the default chat room an user is part of
+    let refDefaultUserChatRoom = this.db.collection('users')
+    .doc(userId)
+    .collection('chatRooms')
+    .doc(roomId)
+
+    refDefaultUserChatRoom.set({
+      roomId: roomId,
+      roomName: roomName
+    })
+  }
+
+  // END OF CHATS AND COMUNICATIONS SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
   
 }

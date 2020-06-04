@@ -21,7 +21,17 @@ export class FecthDataService {
     return ref.get();
   }
 
- 
+
+  getBuildingInfo(buildingId){
+    // get building info
+    let ref = this.db.collection('buildings')
+    .doc(buildingId)
+
+    return ref.get();
+  }
+
+  // PAYMENT TABLE SERVICES
+
   getTableData(buildingId){
      // get payment table's data 
     return this.db.collection('payment_tables').doc(buildingId)
@@ -46,15 +56,38 @@ export class FecthDataService {
     return ref.get();
   }
 
+  // END OF PAYMENT TABLE SERVICES
 
-  getChatRooms(buildingId){
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+  // CHATS AND COMUNICATIONS SERVICES
+
+
+
+  getChatRooms(userId){
     // getting chatrooms info
-    let ref = this.db.collection('chats')
-    .doc(buildingId)
-    .collection('rooms')
+    let ref = this.db.collection('users')
+    .doc(userId)
+    .collection('chatRooms')
 
     return ref.stateChanges(['added']);
   }
+
+
+  getMessagesFromSpecificRoom(buildingId, roomId){
+    // get messages from specific room
+    let ref = this.db.collection('chats')
+    .doc(buildingId)
+    .collection('rooms')
+    .doc(roomId)
+    .collection('messages')
+
+    return ref.stateChanges(['added']);
+  }
+
+  // END OF CHATS AND COMUNICATIONS SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
 
 }
