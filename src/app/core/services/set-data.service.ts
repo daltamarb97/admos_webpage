@@ -167,14 +167,14 @@ export class SetDataService {
         .update({
           roomId: roomId
         }).then(()=>{
-          this.setChatRoomInfoInUser(userId, roomId, roomData.roomName);
+          this.setChatRoomInfoInUser(userId, roomId, roomData.roomName, roomData.roomDescription);
         })
       })
     })
   }
 
 
-  private setChatRoomInfoInUser(userId, roomId, roomName){
+  private setChatRoomInfoInUser(userId, roomId, roomName, roomDescription){
     // link chat room to user
     // (General) is the default chat room an user is part of
     let refDefaultUserChatRoom = this.db.collection('users')
@@ -184,7 +184,26 @@ export class SetDataService {
 
     refDefaultUserChatRoom.set({
       roomId: roomId,
-      roomName: roomName
+      roomName: roomName,
+      roomDescription: roomDescription
+    })
+  }
+
+
+  sendChatMessage(buildingId, roomId, messageData){
+    // send chat message to firestore
+    let ref = this.db.collection('chats')
+    .doc(buildingId)
+    .collection('rooms')
+    .doc(roomId)
+    .collection('messages')
+
+    return ref.add({
+      name: messageData.name,
+      lastname: messageData.lastname,
+      msg: messageData.msg,
+      timestamp: messageData.timestamp,
+      userId: messageData.userId
     })
   }
 

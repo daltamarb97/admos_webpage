@@ -1,10 +1,11 @@
 <mat-sidenav-container class="chat-sidebar-container">
+    <!-- left side menu -->
     <mat-sidenav opened mode="side">
         <div>
             <h6>Salas de Chat</h6>
             <div *ngFor="let room of chatRooms">
                 <mat-card>
-                    <mat-card-header (click)="getMessagesFromRoom(room)">
+                    <mat-card-header  [class.highlighted]="currentRoomData.id === room.roomId" (click)="getMessagesFromRoom(room)">
                         <mat-card-title>{{room.roomName}}</mat-card-title>
                     </mat-card-header>
                 </mat-card>
@@ -23,7 +24,24 @@
             </button>
         </div>
     </mat-sidenav>
-    <mat-sidenav opened mode="side" position="end">caracteristicas de sala</mat-sidenav>
+    <!-- right side menu -->
+    <mat-sidenav opened mode="side" position="end">
+        <h3>Caracteristicas de <b>#{{currentRoomData.name}}</b></h3>
+        <div>
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Descripción</mat-card-title>
+                    <mat-card-subtitle>{{currentRoomData.description}}</mat-card-subtitle>
+                </mat-card-header>
+            </mat-card>
+
+            <mat-card (click)="getParticipantsOfRoom(currentRoomData)">
+                    <mat-card-header>
+                        <mat-card-title>Participantes</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+        </div>
+    </mat-sidenav>
     <!-- chat messages layout -->
     <div *ngIf="chatMessages.length > 0">
         <mat-card class="message-card" *ngFor="let message of chatMessages">
@@ -53,9 +71,14 @@
 
     <mat-card class="message-card">
         <mat-card-content>
-            <mat-form-field class="example-full-width">
-                <textarea matInput></textarea>
+            <mat-form-field>
+                <input matInput type="text" [(ngModel)]="currentMessage">
             </mat-form-field>
+        
+            <mat-button-toggle (click)="sendMessage()">
+                <mat-icon>send</mat-icon>
+            </mat-button-toggle>
+        
         </mat-card-content>
     </mat-card>
 </mat-sidenav-container>

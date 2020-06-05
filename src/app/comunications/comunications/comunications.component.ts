@@ -16,8 +16,15 @@ export class ComunicationsComponent implements OnInit {
 
   userId:string;
   user:any;   //component variable for global userInfo var
-  chatRooms:Array<any> = []; 
-  chatMessages: Array<any> = [];
+  chatRooms:Array<any> = [];  // list of names of rooms
+  chatMessages: Array<any> = []; // array of messages of specific room
+  currentMessage:string; // message to be send
+  currentRoomData = {
+    name: '',
+    id: '',
+    description: ''
+  }  // information of selected room chat
+
 
   constructor(
     private fetchData: FecthDataService,
@@ -55,7 +62,7 @@ export class ComunicationsComponent implements OnInit {
   }
 
 
-  getChatRoomNames(){
+   getChatRoomNames(){
     // get chat rooms names
     this.fetchData.getChatRooms(this.userId)
     .subscribe(data => {
@@ -63,12 +70,18 @@ export class ComunicationsComponent implements OnInit {
         const data= a.payload.doc.data();
         this.chatRooms.push(data);
       });
-      
+      // getting messages od default room on init
+      this.getMessagesFromRoom(this.chatRooms[0]);
     })
   }
 
 
   getMessagesFromRoom(data){
+    this.currentRoomData = {
+      name: data.roomName,
+      id: data.roomId,
+      description: data.roomDescription
+    }
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
     this.fetchData.getMessagesFromSpecificRoom(
@@ -81,6 +94,7 @@ export class ComunicationsComponent implements OnInit {
       })
     })
   }
+
 
 
   addChatRoom(){
@@ -97,8 +111,37 @@ export class ComunicationsComponent implements OnInit {
           roomName: result.data.name,
           roomDescription: result.data.description
         }
-        this.setData.createChatRoom(this.user.activeBuilding, buildingName, roomData, this.userId);
+        this.setData.createChatRoom(
+          this.user.activeBuilding, 
+          buildingName, 
+          roomData, 
+          this.userId
+        );
       })  
     })  
+  }
+
+
+  sendMessage(){
+    // send message in specific room
+    const messageData = {
+      name: this.user.name,
+      lastname: this.user.lastname,
+      msg: this.currentMessage,
+      timestamp: Date.now(),
+      userId: this.userId
+    }
+
+    this.setData.sendChatMessage(this.user.activeBuilding, this.currentRoomData.id, messageData)
+    .then(()=>{
+      // put the chat input in blank
+      this.currentMessage = '';
+    })
+  }
+
+
+  getParticipantsOfRoom(currentRoomData){
+    console.log('show participants logic');
+    console.log(currentRoomData);
   }
 }

@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ComunicationsRoutingModule } from './comunications-routing.module';
 import { ComunicationsComponent } from './comunications/comunications.component';
 import { DemoMaterialModule } from '../demo-material-module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { DemoMaterialModule } from '../demo-material-module';
     CommonModule,
     DemoMaterialModule,
     FlexLayoutModule,
-    ComunicationsRoutingModule
+    ComunicationsRoutingModule,
+    FormsModule
   ]
 })
 export class ComunicationsModule { }
