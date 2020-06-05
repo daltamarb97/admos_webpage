@@ -4,8 +4,15 @@ import { MatDialog } from '@angular/material';
 import { FecthDataService } from '../../core/services/fecth-data.service';
 import { AuthService } from '../../core/services/auth.service';
 import { SetDataService } from '../../core/services/set-data.service';
+import { DeleteDataService } from '../../core/services/delete-data.service';
 
 import { ChatCreationDialogComponent } from '../../material-component/chat-creation-dialog/chat-creation-dialog.component';
+
+export class currentRoomData {
+  name:string;
+  id:string;
+  description:string;
+}
 
 @Component({
   selector: 'app-comunications',
@@ -19,17 +26,14 @@ export class ComunicationsComponent implements OnInit {
   chatRooms:Array<any> = [];  // list of names of rooms
   chatMessages: Array<any> = []; // array of messages of specific room
   currentMessage:string; // message to be send
-  currentRoomData = {
-    name: '',
-    id: '',
-    description: ''
-  }  // information of selected room chat
+  currentRoomData: currentRoomData;  // information of selected room chat
 
-
+  
   constructor(
     private fetchData: FecthDataService,
     private setData: SetDataService,
     private authService: AuthService,
+    private deleteData: DeleteDataService,
     // UI components
     public dialog: MatDialog
   ) { }
@@ -67,8 +71,17 @@ export class ComunicationsComponent implements OnInit {
     this.fetchData.getChatRooms(this.userId)
     .subscribe(data => {
       data.map(a=>{
-        const data= a.payload.doc.data();
-        this.chatRooms.push(data);
+        if(a.type === 'added'){
+          const data= a.payload.doc.data();
+          this.chatRooms.push(data);
+        }else if( a.type === 'removed'){
+          for(let i in this.chatRooms){
+            if(this.chatRooms[i].roomId === this.currentRoomData.id){
+              const index = parseInt(i);
+              this.chatRooms.splice(index, 1);
+            }
+          }
+        }
       });
       // getting messages od default room on init
       this.getMessagesFromRoom(this.chatRooms[0]);
@@ -143,5 +156,19 @@ export class ComunicationsComponent implements OnInit {
   getParticipantsOfRoom(currentRoomData){
     console.log('show participants logic');
     console.log(currentRoomData);
+  }
+
+
+  deleteChatRoom(){
+    // delete current chat room
+    const dialogRef = this.dialog.open(ChatCreationDialogComponent,{data: 'delete'});
+    dialogRef.afterClosed()
+    .subscribe(result => {
+      if(result.data === 'delete'){
+        this.deleteData.deleteChatRoom(this.user.activeBuilding, this.currentRoomData.id, this.userId);
+      }else{
+        // do nothing
+      }
+    })
   }
 }

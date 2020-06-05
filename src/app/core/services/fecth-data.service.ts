@@ -70,8 +70,10 @@ export class FecthDataService {
     .doc(userId)
     .collection('chatRooms')
 
-    return ref.stateChanges(['added']);
+    return ref.stateChanges(['added', 'removed']);
   }
+
+
 
 
   getMessagesFromSpecificRoom(buildingId, roomId){

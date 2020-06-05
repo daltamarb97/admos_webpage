@@ -36,10 +36,12 @@
             </mat-card>
 
             <mat-card (click)="getParticipantsOfRoom(currentRoomData)">
-                    <mat-card-header>
-                        <mat-card-title>Participantes</mat-card-title>
-                    </mat-card-header>
-                </mat-card>
+                <mat-card-header>
+                    <mat-card-title>Participantes</mat-card-title>
+                </mat-card-header>
+            </mat-card>
+
+            <button mat-raised-button color="warn" (click)="deleteChatRoom()">Eliminar #{{currentRoomData.name}}</button>
         </div>
     </mat-sidenav>
     <!-- chat messages layout -->

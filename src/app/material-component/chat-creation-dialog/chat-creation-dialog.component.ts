@@ -15,17 +15,24 @@ export class ChatCreationDialogComponent {
     description: '',
     participants: []
   }
+  action:string;
 
   constructor(
     public dialogRef: MatDialogRef<ChatCreationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.action = data;
+    }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   createChatRoom(){
-    this.dialogRef.close({ data: this.local_data});
+    this.dialogRef.close({data: this.local_data});
+  }
+
+  deleteChatRoom(){
+    this.dialogRef.close({data: this.action});
   }
 
 }
