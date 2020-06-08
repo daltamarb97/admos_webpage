@@ -23,11 +23,14 @@ export class ComunicationsComponent implements OnInit {
 
   userId:string;
   user:any;   //component variable for global userInfo var
+
   chatRooms:Array<any> = [];  // list of names of rooms
   chatMessages: Array<any> = []; // array of messages of specific room
   currentMessage:string; // message to be send
   currentRoomData: currentRoomData;  // information of selected room chat
-
+  currentRoomParticipants: Array<any> = []; // information of current room participants
+  residentsData:Array<any> = []; // residents list
+  employeesData:Array<any> = []; // employees list
   
   constructor(
     private fetchData: FecthDataService,
@@ -72,7 +75,7 @@ export class ComunicationsComponent implements OnInit {
     .subscribe(data => {
       data.map(a=>{
         if(a.type === 'added'){
-          const data= a.payload.doc.data();
+          const data= a.payload.doc.data(); 
           this.chatRooms.push(data);
         }else if( a.type === 'removed'){
           for(let i in this.chatRooms){
@@ -83,7 +86,7 @@ export class ComunicationsComponent implements OnInit {
           }
         }
       });
-      // getting messages od default room on init
+      // getting messages of default room on init
       this.getMessagesFromRoom(this.chatRooms[0]);
     })
   }
@@ -93,7 +96,7 @@ export class ComunicationsComponent implements OnInit {
     this.currentRoomData = {
       name: data.roomName,
       id: data.roomId,
-      description: data.roomDescription
+      description: data.roomDescription,
     }
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
@@ -106,31 +109,44 @@ export class ComunicationsComponent implements OnInit {
         this.chatMessages.push(message)
       })
     })
+    this.getParticipantsFromRoom();
   }
 
 
+  private getParticipantsFromRoom(){
+    this.currentRoomParticipants = []; //clear the array on click
+    // get participants of current room
+    this.fetchData.getParticipantsFromSpecificRoom(
+      this.user.activeBuilding, 
+      this.currentRoomData.id
+    ).subscribe(participants => {
+      participants.map(p=>{
+        const participant = p.payload.doc.data(); 
+        this.currentRoomParticipants.push(participant)
+      })
+    })
+  }
+
 
   addChatRoom(){
-    const dialogRef = this.dialog.open(ChatCreationDialogComponent);
+    const dialogRef = this.dialog.open(ChatCreationDialogComponent, {data: this.user.activeBuilding});
 
     dialogRef.afterClosed()
     .subscribe(result =>{
-      // bring building data
-      this.fetchData.getBuildingInfo(this.user.activeBuilding)
-      .subscribe((data)=>{
-        const buildingName = data.data().name;
-        // create new chat room  
-        const roomData = {
-          roomName: result.data.name,
-          roomDescription: result.data.description
-        }
-        this.setData.createChatRoom(
-          this.user.activeBuilding, 
-          buildingName, 
-          roomData, 
-          this.userId
-        );
-      })  
+      // create new chat room  
+
+      const roomData = {
+        roomName: result.data.name,
+        roomDescription: result.data.description
+      }
+      const participants: Array<any> = result.data.participants;
+
+      this.setData.createChatRoom(
+        this.user.activeBuilding, 
+        roomData, 
+        this.userId,
+        participants
+      );  
     })  
   }
 
@@ -150,12 +166,6 @@ export class ComunicationsComponent implements OnInit {
       // put the chat input in blank
       this.currentMessage = '';
     })
-  }
-
-
-  getParticipantsOfRoom(currentRoomData){
-    console.log('show participants logic');
-    console.log(currentRoomData);
   }
 
 

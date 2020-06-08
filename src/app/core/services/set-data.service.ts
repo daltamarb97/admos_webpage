@@ -95,7 +95,7 @@ export class SetDataService {
         this.createNewAdminUser(adminData, adminId, buildingId);
         // creates default chatRoom for this building
         // General is the default chat room
-        this.createChatRoom(
+        this.createDefaultChatRoom(
           buildingId, 
           buildingData.name, 
           {roomName: 'General', 
@@ -147,7 +147,7 @@ export class SetDataService {
 
   // CHATS AND COMUNICATIONS SERVICES
 
-  createChatRoom(buildingId:string, buildingName:string, roomData:any, userId:string){
+  createDefaultChatRoom(buildingId:string, buildingName:string, roomData:any, userId:string){
     // creates building chats db ref and default chat room
     let ref = this.db.collection('chats')
     .doc(buildingId)
@@ -174,9 +174,72 @@ export class SetDataService {
   }
 
 
+  createChatRoom(buildingId:string, roomData:any, userId:string, participants:Array<any>){
+    // creates new Chat room
+      let ref = this.db.collection('chats')
+      .doc(buildingId)
+
+      return ref.collection('rooms')
+      .add({
+        roomName: roomData.roomName,
+        roomDescription: roomData.roomDescription,
+      }).then(docRef =>{
+        const roomId = docRef.id;
+        ref.collection('rooms')
+        .doc(roomId)
+        .update({
+          roomId: roomId
+        }).then(()=>{
+          participants.forEach((p)=>{
+            if(p.property){
+              ref.collection('rooms')
+              .doc(roomId)
+              .collection('participants')
+              .doc(p.userId)
+              .set({
+                userId: p.userId,
+                name: p.name,
+                lastname: p.lastname,
+                property: p.property
+              }).then(()=>{
+                this.setChatRoomInfoInUser(
+                  p.userId,  
+                  roomId, 
+                  roomData.roomName, 
+                  roomData.roomDescription
+                )
+              })
+            }else{
+              ref.collection('rooms')
+              .doc(roomId)
+              .collection('participants')
+              .doc(p.userId)
+              .set({
+                userId: p.userId,
+                name: p.name,
+                lastname: p.lastname,
+                property: p.job
+              }).then(()=>{
+                this.setChatRoomInfoInUser(
+                  p.userId,  
+                  roomId, 
+                  roomData.roomName, 
+                  roomData.roomDescription
+                )
+              })
+            }
+          })
+        }).then(()=>{
+          this.setChatRoomInfoInUser(userId, roomId, roomData.roomName, roomData.roomDescription);
+        })
+      })
+    
+  }
+
+
   private setChatRoomInfoInUser(userId, roomId, roomName, roomDescription){
-    // link chat room to user
-    // (General) is the default chat room an user is part of
+    // link chat room to user participant or admin
+    // (General/...(more default rooms to come)) is the default chat room an user is part of
     let refDefaultUserChatRoom = this.db.collection('users')
     .doc(userId)
     .collection('chatRooms')

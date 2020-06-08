@@ -21,6 +21,7 @@ export class FecthDataService {
     return ref.get();
   }
 
+  // BUIDLING SERVICES
 
   getBuildingInfo(buildingId){
     // get building info
@@ -29,6 +30,30 @@ export class FecthDataService {
 
     return ref.get();
   }
+
+
+  getBuidlingResidents(buildingId){
+    // get building residents 
+    let ref = this.db.collection('buildings')
+    .doc(buildingId)
+    .collection('residents')
+
+    return ref.stateChanges(['added']);
+  }
+
+
+  getBuidlingEmployees(buildingId){
+    // get building residents 
+    let ref = this.db.collection('buildings')
+    .doc(buildingId)
+    .collection('employees')
+    
+    return ref.stateChanges(['added']);
+  }
+
+  // END BUIDLING SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
   // PAYMENT TABLE SERVICES
 
@@ -74,8 +99,6 @@ export class FecthDataService {
   }
 
 
-
-
   getMessagesFromSpecificRoom(buildingId, roomId){
     // get messages from specific room
     let ref = this.db.collection('chats')
@@ -83,6 +106,18 @@ export class FecthDataService {
     .collection('rooms')
     .doc(roomId)
     .collection('messages')
+
+    return ref.stateChanges(['added']);
+  }
+
+
+  getParticipantsFromSpecificRoom(buildingId, roomId){
+    // get messages from specific room
+    let ref = this.db.collection('chats')
+    .doc(buildingId)
+    .collection('rooms')
+    .doc(roomId)
+    .collection('participants')
 
     return ref.stateChanges(['added']);
   }

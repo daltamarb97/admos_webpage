@@ -26,7 +26,7 @@
     </mat-sidenav>
     <!-- right side menu -->
     <mat-sidenav opened mode="side" position="end">
-        <h3>Caracteristicas de <b>#{{currentRoomData.name}}</b></h3>
+        <h3><b>#{{currentRoomData.name}}</b></h3>
         <div>
             <mat-card>
                 <mat-card-header>
@@ -34,15 +34,20 @@
                     <mat-card-subtitle>{{currentRoomData.description}}</mat-card-subtitle>
                 </mat-card-header>
             </mat-card>
-
-            <mat-card (click)="getParticipantsOfRoom(currentRoomData)">
-                <mat-card-header>
-                    <mat-card-title>Participantes</mat-card-title>
-                </mat-card-header>
-            </mat-card>
-
-            <button mat-raised-button color="warn" (click)="deleteChatRoom()">Eliminar #{{currentRoomData.name}}</button>
         </div>
+        <h5>Participantes de <b>#{{currentRoomData.name}}</b></h5>
+        <div>
+            <mat-card>
+                <mat-card-content *ngFor="let participant of currentRoomParticipants">
+                    <p>
+                    {{participant.name}} {{participant.lastname}}({{participant.property}})
+                    </p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <button mat-raised-button color="warn" (click)="deleteChatRoom()">Eliminar #{{currentRoomData.name}}</button>
+       
     </mat-sidenav>
     <!-- chat messages layout -->
     <div *ngIf="chatMessages.length > 0">

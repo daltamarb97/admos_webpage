@@ -9,9 +9,9 @@
   </mat-form-field>
 
 <mat-form-field>
-    <mat-label>Participants</mat-label>
+    <mat-label>Participantes</mat-label>
     <mat-select [(ngModel)]="local_data.participants" multiple>
-      <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+      <mat-option *ngFor="let res of residentsList" [value]="res">{{res.name}} {{res.lastname}} ({{res.property}}{{res.job}})</mat-option>
     </mat-select>
   </mat-form-field>
 
