@@ -20,7 +20,8 @@ export class SetDataService {
     return ref.add(data).then((docRef)=>{
         ref.doc(docRef.id).update({
           rowId: docRef.id,
-          manualEmail: false
+          manualEmail: false,
+          pending_to_pay: data.amount_to_pay
         })
     })
   }

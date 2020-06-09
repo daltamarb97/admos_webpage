@@ -14,6 +14,14 @@
         </mat-form-field>
       
         <mat-form-field>
+          <input type="number" placeholder="cédula del residente" matInput [(ngModel)]="local_data.legal_id">
+        </mat-form-field>
+
+        <mat-form-field *ngIf="action != 'Add'">
+          <input type="number" placeholder="valor pendiente por pagar" matInput [(ngModel)]="local_data.pending_to_pay">
+        </mat-form-field>
+
+        <mat-form-field>
           <input type="number" placeholder="valor de cuota admin" matInput [(ngModel)]="local_data.amount_to_pay">
         </mat-form-field>
 

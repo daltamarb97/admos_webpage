@@ -8,6 +8,9 @@ import { DeleteDataService } from '../../core/services/delete-data.service';
 
 import { ChatCreationDialogComponent } from '../../material-component/chat-creation-dialog/chat-creation-dialog.component';
 
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
 export class currentRoomData {
   name:string;
   id:string;
@@ -20,6 +23,8 @@ export class currentRoomData {
   styleUrls: ['./comunications.component.scss']
 })
 export class ComunicationsComponent implements OnInit {
+
+  destroy$: Subject<void> = new Subject();
 
   userId:string;
   user:any;   //component variable for global userInfo var
@@ -47,8 +52,16 @@ export class ComunicationsComponent implements OnInit {
   }
 
 
+  ngOnDestroy(){
+    this.destroy$.next();
+  }
+
+
   getUserId(){
     this.authService.getCurrentUser()
+      .pipe(
+        takeUntil(this.destroy$)
+      )
       .subscribe(user => {
         this.userId = user.uid; 
         this.getUserInfo();

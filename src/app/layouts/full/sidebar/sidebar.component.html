@@ -8,18 +8,22 @@
     <!-- ============================================================== -->
     <!-- Profile - style you can find in header.scss -->
     <!-- ============================================================== -->
-    <div class="profile-text"><a [matMenuTriggerFor]="sdprofile" class=""> Markarn Doe <i class="ti-angle-down font-12 m-l-5"></i></a></div>
-    <mat-menu #sdprofile="matMenu" class="mymegamenu">
+    <div class="profile-text">
+        <!-- <a [matMenuTriggerFor]="sdprofile" class="">  (USE THIS LINE IN CASE THAT YOU WANT TO DISPLAY MENU ON CLICK (JUAN DAVID))-->
+        <a class="">
+            Markarn Doe 
+            <i class="ti-angle-down font-12 m-l-5"></i>
+        </a>
+    </div>
+    <!-- USE THE MENU BELOW JUST IF IS NEEDED (JUAN DAVID) -->
+    <!-- <mat-menu #sdprofile="matMenu" class="mymegamenu">
         <button mat-menu-item>
-            <mat-icon>settings</mat-icon> Settings </button>
+            <mat-icon>settings</mat-icon> Configuracion </button>
         <button mat-menu-item>
-            <mat-icon>account_box</mat-icon> Profile </button>
-        <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon> Disable notifications </button>
-        <button mat-menu-item>
-            <mat-icon>exit_to_app</mat-icon> Sign Out </button>
-    </mat-menu>
-    
+            <mat-icon>account_box</mat-icon> Perfil </button>
+        <button mat-menu-item (click)="logOut()">
+            <mat-icon>exit_to_app</mat-icon> Cerrar Sesión </button>
+    </mat-menu> -->   
 </div>
 <mat-nav-list appAccordion>
     <mat-list-item appAccordionLink *ngFor="let menuitem of menuItems.getMenuitem()" routerLinkActive="selected" group="{{menuitem.state}}">
@@ -30,8 +34,4 @@
             <span class="label label-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span> 
         </a>  
     </mat-list-item>
-    <mat-list-item>
-        <button (click)="logOut()">Cerrar Sesión</button>
-    </mat-list-item>
-
 </mat-nav-list>

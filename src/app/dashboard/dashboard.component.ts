@@ -54,6 +54,9 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
       this.authService.getCurrentUser()
+      .pipe(
+        takeUntil(this.destroy$)
+      )
       .subscribe(user => {
         this.userId = user.uid; 
         this.getUserInfo();
@@ -62,7 +65,6 @@ export class DashboardComponent implements OnInit {
 
 
     ngOnDestroy(){
-      console.log('me destruí');
       this.destroy$.next();
     }
 
@@ -164,6 +166,11 @@ export class DashboardComponent implements OnInit {
         }
       })
 
+    }
+
+    showinfo(row){
+      console.log(row);
+      
     }
 
 
