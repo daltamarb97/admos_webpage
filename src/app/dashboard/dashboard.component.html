@@ -54,7 +54,7 @@
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="background-color: green"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="background-color: green"></tr>
     
 </table>
 
