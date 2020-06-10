@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource, MatDialog} from '@angular/material';
+import { Router } from '@angular/router';
 
 import { FecthDataService } from '../core/services/fecth-data.service';
 import { SetDataService } from '../core/services/set-data.service';
@@ -12,7 +13,10 @@ import * as XLSX from 'xlsx';
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
 import { AuthService } from '../core/services/auth.service';
-import { Router } from '@angular/router';
+import { HoldDataService } from '../core/services/hold-data.service';
+
+
+
 
 
 
@@ -42,6 +46,7 @@ export class DashboardComponent implements OnInit {
       private setData: SetDataService,
       private deleteData: DeleteDataService,
       private authService: AuthService,
+      private holdData: HoldDataService,
       // UI components
       public dialog: MatDialog,
       private router: Router
@@ -68,6 +73,7 @@ export class DashboardComponent implements OnInit {
 
     ngOnDestroy(){
       this.destroy$.next();
+      console.log('me destrui');
     }
 
 
@@ -178,7 +184,7 @@ export class DashboardComponent implements OnInit {
 
 
     showUserRowProfile(row){
-      console.log(row); 
+      this.holdData.userInfoInRow = row;
       this.router.navigate(['/tabla-pagos/', row.rowId])
     }
 

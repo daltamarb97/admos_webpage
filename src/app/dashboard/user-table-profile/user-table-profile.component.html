@@ -1,1 +1,27 @@
-<p>user-table-profile works!</p>
+<mat-card class="oh text-center little-profile">
+    <mat-card-content>
+        <mat-icon style="display: flex;" (click)="goBackToDashboard()">arrow_back</mat-icon>
+        
+        <h3 class="m-b-0">Propiedad: <b>{{rowInfo.facility_number}}</b></h3>
+        <h6 class="m-t-0 ">Email: <b>{{rowInfo.email}} </b></h6>
+        <mat-card-actions>
+            <button mat-raised-button style="background-color: rgb(161, 236, 161)">Ver Movimientos de Pagos
+                <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+        </mat-card-actions>
+        <div fxLayout="row" fxLayoutWrap="wrap" class="m-t-30">
+            <div fxFlex.gt-sm="33.33%" fxFlex.gt-xs="33.33%" fxFlex="100">
+                <h3 class="m-0 font-light">{{rowInfo.amount_to_pay | currency}}</h3>
+                <small>Valor de cuota administrativa</small>
+            </div>
+            <div fxFlex.gt-sm="33.33%" fxFlex.gt-xs="33.33%" fxFlex="100">
+                <h3 class="m-0 font-light">{{rowInfo.pending_to_pay | currency}}</h3>
+                <small>Valor pendiente por pagar</small>
+            </div>
+            <div fxFlex.gt-sm="33.33%" fxFlex.gt-xs="33.33%" fxFlex="100">
+                <h3 class="m-0 font-light">{{rowInfo.phone}}</h3>
+                <small>Telefono Asociado</small>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

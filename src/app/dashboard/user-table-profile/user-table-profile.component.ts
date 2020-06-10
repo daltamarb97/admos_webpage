@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+
+import { HoldDataService } from '../../core/services/hold-data.service';
+
 
 @Component({
   selector: 'app-user-table-profile',
@@ -7,9 +11,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserTableProfileComponent implements OnInit {
 
-  constructor() { }
+  rowInfo:object;
+
+  constructor(
+    private _location: Location,
+    // services 
+    private holdData: HoldDataService
+  ) { }
 
   ngOnInit(): void {
+    this.rowInfo = this.holdData.userInfoInRow;
+    console.log(this.rowInfo);  
+  }
+
+
+  goBackToDashboard(){
+    this._location.back();
   }
 
 }
