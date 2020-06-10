@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
 import { AuthService } from '../core/services/auth.service';
+import { Router } from '@angular/router';
 
 
 
@@ -42,7 +43,8 @@ export class DashboardComponent implements OnInit {
       private deleteData: DeleteDataService,
       private authService: AuthService,
       // UI components
-      public dialog: MatDialog
+      public dialog: MatDialog,
+      private router: Router
     ){ 
       this.getColumnNames();
     }
@@ -69,7 +71,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    getColumnNames(){
+    private getColumnNames(){
       // get column names dynamically
       this.fetchData.getColumnNames().subscribe((data)=>{
         let obj = data.data()
@@ -80,7 +82,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    getUserInfo(){
+    private getUserInfo(){
       // get user Info to be used
       this.fetchData.getUserInfo(this.userId)
       .subscribe(user=>{
@@ -94,7 +96,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    getInitialTableData(){
+    private getInitialTableData(){
       // get current table data on init
       this.fetchData.getTableData(
         this.user.activeBuilding,
@@ -108,7 +110,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    getCurrentPaymentDay(){
+    private getCurrentPaymentDay(){
       // get current payment day from firebase
       this.fetchData.getPaymentDay(this.user.activeBuilding)
       .subscribe((day)=>{
@@ -148,6 +150,7 @@ export class DashboardComponent implements OnInit {
       }
 
     
+
     openDialog(action, obj){
       obj.action = action;
       const dialogRef = this.dialog.open(DialogOverviewComponent,{
@@ -158,35 +161,47 @@ export class DashboardComponent implements OnInit {
         if(result.event === 'Cancel'){
           // do nothing
         }else if(result.event === 'Update'){
-          this.updateRowData(result.data)
+          this.updateRowData(result.data);
         }else if(result.event === 'Delete'){
-          this.deleteRowData(result.data)
+          this.deleteRowData(result.data);
         }else if(result.event === 'Add'){
           this.setRowData(result.data);
+        }else if(result.event === 'Payment'){ 
+          const data = {
+            pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
+            rowId: result.data.rowId,
+          }
+          this.updatePendingToPay(data);
         }
       })
-
-    }
-
-    showinfo(row){
-      console.log(row);
-      
     }
 
 
-    updateRowData(data){
+    showUserRowProfile(row){
+      console.log(row); 
+      this.router.navigate(['/tabla-pagos/', row.rowId])
+    }
+
+
+    private updateRowData(data){
       // update firebase info for that specific row
       this.setData.updateSingleRow(this.user.activeBuilding, data.rowId, data)
     }
 
 
-    deleteRowData(data){
+    private updatePendingToPay(data){
+      // update firebase info for that specific row
+      this.setData.updatePendingToPay(this.user.activeBuilding, data.rowId, data.pending_to_pay)      
+    }
+
+
+    private deleteRowData(data){
       // delete data of specific row from firebase
       this.deleteData.deleteSingleTableRow(this.user.activeBuilding, data.rowId)
     }
 
 
-    setRowData(data){
+    private setRowData(data){
       // Set row data manually
       this.setData.setTableData(this.user.activeBuilding, data)
     }

@@ -1,47 +1,50 @@
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Acción</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Acciones</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center">
             <mat-icon (click)='openDialog("Update",element)'>create</mat-icon>
             <mat-icon color="warn" (click)='openDialog("Delete",element)'>delete</mat-icon>
+            <mat-icon style="color: green" (click)='openDialog("Payment",element)'>monetization_on</mat-icon>
         </td>  
     </ng-container>
 
     <ng-container matColumnDef="facility_number">
-        <th mat-header-cell *matHeaderCellDef>Apto/Casa/Oficina</th>
-        <td mat-cell *matCellDef="let element"> {{element.facility_number}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Apto/Casa/Oficina</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.facility_number}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email Asociado</th>
-        <td mat-cell *matCellDef="let element"> {{element.email}} </td>    
+    <ng-container matColumnDef="email" class="container-align">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Email Asociado</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.email}} </td>    
     </ng-container>
 
     <ng-container matColumnDef="phone">
-        <th mat-header-cell *matHeaderCellDef>Telefono Asociado</th>
-        <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Telefono Asociado</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.phone}} </td>
     </ng-container>
 
     <ng-container matColumnDef="legal_id">
-        <th mat-header-cell *matHeaderCellDef>Cédula Residente</th>
-        <td mat-cell *matCellDef="let element"> {{element.legal_id}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Cédula Residente</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.legal_id}} </td>
     </ng-container>
 
     <ng-container matColumnDef="pending_to_pay">
-        <th mat-header-cell *matHeaderCellDef>Valor pendiente por pagar</th>
-        <td mat-cell *matCellDef="let element"> {{element.pending_to_pay}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Valor pendiente por pagar</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.pending_to_pay}} </td>
     </ng-container>
 
     <ng-container matColumnDef="amount_to_pay">
-        <th mat-header-cell *matHeaderCellDef>Valor Renta</th>
-        <td mat-cell *matCellDef="let element"> {{element.amount_to_pay}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Valor Renta</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> {{element.amount_to_pay}} </td>
     </ng-container>
 
     <ng-container matColumnDef="reminder_email">
-        <th mat-header-cell *matHeaderCellDef>Correo recordatorio de Pago</th>
-        <td mat-cell *matCellDef="let element"> 
-            <button mat-raised-button color="primary" (click)='sendPaymentRemainderEmail(element)'>Enviar Correo</button>
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Correo recordatorio de Pago</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center"> 
+            <button mat-raised-button color="primary" (click)='sendPaymentRemainderEmail(element)'>
+                <mat-icon>email</mat-icon>
+            </button>
         </td>
     </ng-container>
 
@@ -54,7 +57,10 @@
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="background-color: green"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+        [ngStyle]="{'background-color':row.pending_to_pay > row.amount_to_pay ? '#F2D0D0' : 'white' }"
+        (click)="showUserRowProfile(row)">
+    </tr>
     
 </table>
 

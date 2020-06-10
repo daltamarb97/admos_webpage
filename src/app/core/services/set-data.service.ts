@@ -35,9 +35,23 @@ export class SetDataService {
     .doc(rowId)
 
     return ref.update(data).then(()=>{
-      console.log('updated successfully');
-      
-    })
+      console.log('updated successfully');    
+    });
+  }
+
+
+  updatePendingToPay(buildingId, rowId, data){
+    // update pending_to_pay data in firebase table
+    let ref = this.db.collection('payment_tables/')
+    .doc(buildingId)
+    .collection('rows_data')
+    .doc(rowId)
+
+    return ref.update({
+      pending_to_pay: data
+    }).then(()=>{
+      console.log('payment updated successfully');    
+    });
   }
 
 

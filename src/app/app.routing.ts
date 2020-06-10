@@ -34,6 +34,10 @@ export const AppRoutes: Routes = [
       },
       {
         path: 'canales-comunicacion',
+        canActivate: [
+          CurrentUserGuard,
+          EmailVerifiedGuardService
+        ],
         loadChildren:
           () => import('./comunications/comunications.module').then(m => m.ComunicationsModule)
       },
