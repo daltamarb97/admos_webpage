@@ -1,7 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { MatTableDataSource } from '@angular/material';
 
 import { HoldDataService } from '../../core/services/hold-data.service';
+import { FecthDataService } from '../../core/services/fecth-data.service';
+
+import { takeUntil, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+
+
+export interface PeriodicElement {
+  name: string;
+  position: number;
+}
 
 
 @Component({
@@ -11,12 +23,19 @@ import { HoldDataService } from '../../core/services/hold-data.service';
 })
 export class UserTableProfileComponent implements OnInit {
 
-  rowInfo:object;
+  rowInfo:any;
+  showTable:boolean = false; // this variable allow UI to show table of payment records
+  destroy$:  Subject<void> = new Subject()
+
+  // record of payments table variables
+  displayedColumns: string[] = ['paid_amount', 'timestamp', 'author'];
+  dataSource = new MatTableDataSource([]);
 
   constructor(
     private _location: Location,
     // services 
-    private holdData: HoldDataService
+    private holdData: HoldDataService,
+    private fetchData: FecthDataService
   ) { }
 
   ngOnInit(): void {
@@ -25,8 +44,44 @@ export class UserTableProfileComponent implements OnInit {
   }
 
 
+  ngOnDestroy(){
+    this.cancelTableSubscription();
+  }
+
+
+  cancelTableSubscription(){
+    this.destroy$.next();
+    this.destroy$.complete(); 
+    console.log('ya no estoy');
+  }
+
+
   goBackToDashboard(){
     this._location.back();
+  }
+
+
+  getPaymentRecords(){
+    this.showTable = true; 
+    // get payment records
+    this.fetchData.getSingleUserPaymentRecords(this.rowInfo.rowId)
+    .pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(data => {
+      console.log('aqui hay nueva data de pagos');
+      const dataArray = data;
+      const finalArray = dataArray.map(e => {
+        e.timestamp = e.timestamp.toDate();
+        return e;
+      });
+      this.dataSource.data = finalArray;
+    })
+  }
+
+
+  hideRecordTable(){
+    this.showTable = false;
+    this.cancelTableSubscription();
   }
 
 }

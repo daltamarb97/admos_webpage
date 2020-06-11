@@ -4,11 +4,50 @@
         
         <h3 class="m-b-0">Propiedad: <b>{{rowInfo.facility_number}}</b></h3>
         <h6 class="m-t-0 ">Email: <b>{{rowInfo.email}} </b></h6>
-        <mat-card-actions>
-            <button mat-raised-button style="background-color: rgb(161, 236, 161)">Ver Movimientos de Pagos
+        <mat-card-actions *ngIf="showTable===false">
+            <button mat-raised-button 
+                style="background-color: rgb(161, 236, 161)" 
+                (click)="getPaymentRecords()">
+                Ver Movimientos de Pagos
                 <mat-icon>keyboard_arrow_down</mat-icon>
             </button>
         </mat-card-actions>
+        <mat-card-actions *ngIf="showTable">
+            <button mat-raised-button 
+                color="warn"
+                (click)="hideRecordTable()">
+                Ocultar Movimientos de Pagos
+                <mat-icon>keyboard_arrow_up</mat-icon>
+            </button>
+        </mat-card-actions>
+
+        <section *ngIf="showTable">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="paid_amount">
+                  <mat-header-cell *matHeaderCellDef> Monto Pagado </mat-header-cell>
+                  <mat-cell *matCellDef="let element"> {{element.paid_amount | currency}} </mat-cell>
+                </ng-container>
+   
+                <ng-container matColumnDef="timestamp">
+                    <mat-header-cell *matHeaderCellDef> Fecha de Pago </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.timestamp | date}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="author">
+                    <mat-header-cell *matHeaderCellDef> Registrado por </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.author}} </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+
+            <p><b> 
+                *Todos los 1 de cada mes se suma el valor actual de cuota 
+                administrativa a valor pendiente por pagar
+            </b></p>
+        </section>
+
         <div fxLayout="row" fxLayoutWrap="wrap" class="m-t-30">
             <div fxFlex.gt-sm="33.33%" fxFlex.gt-xs="33.33%" fxFlex="100">
                 <h3 class="m-0 font-light">{{rowInfo.amount_to_pay | currency}}</h3>

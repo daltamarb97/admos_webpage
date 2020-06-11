@@ -40,7 +40,7 @@ export class SetDataService {
   }
 
 
-  updatePendingToPay(buildingId, rowId, data){
+  updatePendingToPay(buildingId:string, rowId:string, data, paymentData:object){
     // update pending_to_pay data in firebase table
     let ref = this.db.collection('payment_tables/')
     .doc(buildingId)
@@ -50,8 +50,24 @@ export class SetDataService {
     return ref.update({
       pending_to_pay: data
     }).then(()=>{
-      console.log('payment updated successfully');    
+      this.updatePaymentRecords(rowId, paymentData);
     });
+  }
+
+
+  private updatePaymentRecords(rowId:string, paymentData:object){
+    let ref = this.db.collection('payments_records')
+    .doc(rowId)
+    .collection('record_of_payments')
+
+    return ref.add(paymentData).then(docRef => {
+      const paymentId = docRef.id;
+      // update paymentId
+      ref.doc(paymentId)
+      .update({
+        paymentId: paymentId
+      }).then(()=> console.log('payment updated successfully'));
+    })
   }
 
 

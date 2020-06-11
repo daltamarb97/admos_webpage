@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit {
       this.getColumnNames();
     }
 
-    
+    // table variables
     displayedColumns: string[] = [];
     dataSource = new MatTableDataSource([]);
 
@@ -73,6 +73,7 @@ export class DashboardComponent implements OnInit {
 
     ngOnDestroy(){
       this.destroy$.next();
+      this.destroy$.complete();
       console.log('me destrui');
     }
 
@@ -176,8 +177,15 @@ export class DashboardComponent implements OnInit {
           const data = {
             pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
             rowId: result.data.rowId,
-          }
-          this.updatePendingToPay(data);
+          };
+
+          const paymentData = {
+            paid_amount: result.data.payment,
+            timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+            author: 'admin'
+          };
+
+          this.updatePendingToPay(data, paymentData);
         }
       })
     }
@@ -195,9 +203,9 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    private updatePendingToPay(data){
+    private updatePendingToPay(data, paymentData){
       // update firebase info for that specific row
-      this.setData.updatePendingToPay(this.user.activeBuilding, data.rowId, data.pending_to_pay)      
+      this.setData.updatePendingToPay(this.user.activeBuilding, data.rowId, data.pending_to_pay, paymentData)      
     }
 
 

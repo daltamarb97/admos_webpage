@@ -59,8 +59,10 @@ export class FecthDataService {
 
   getTableData(buildingId){
      // get payment table's data 
-    return this.db.collection('payment_tables').doc(buildingId)
-    .collection('rows_data').valueChanges();
+    return this.db.collection('payment_tables')
+    .doc(buildingId)
+    .collection('rows_data')
+    .valueChanges();
   }
 
 
@@ -79,6 +81,16 @@ export class FecthDataService {
     .doc('col_names')
 
     return ref.get();
+  }
+
+
+  getSingleUserPaymentRecords(rowId){
+    // get payment record of specific row in user detail's view after click on admin's table of payments
+    let ref = this.db.collection('payments_records')
+    .doc(rowId)
+    .collection('record_of_payments')
+
+    return ref.valueChanges();
   }
 
   // END OF PAYMENT TABLE SERVICES
