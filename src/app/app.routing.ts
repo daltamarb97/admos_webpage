@@ -41,6 +41,15 @@ export const AppRoutes: Routes = [
         loadChildren:
           () => import('./comunications/comunications.module').then(m => m.ComunicationsModule)
       },
+      {
+        path: 'pizarra',
+        canActivate: [
+          CurrentUserGuard,
+          EmailVerifiedGuardService
+        ],
+        loadChildren:
+          () => import('./board/board.module').then(m => m.BoardModule)
+      },
     ]
   },
   {

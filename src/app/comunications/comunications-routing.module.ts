@@ -8,7 +8,7 @@ const ComunicationsRoutes: Routes = [
   {
     path: '',
     component: ComunicationsComponent
-  }
+  },
 ];
 
 @NgModule({

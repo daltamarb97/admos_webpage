@@ -220,12 +220,6 @@ export class DashboardComponent implements OnInit {
       this.setData.setTableData(this.user.activeBuilding, data)
     }
 
-
-    setNewPaymentDay(event){
-      // set/update payment day
-      this.setData.setPaymentDay(this.user.activeBuilding, event.value);
-    }
-
     
     sendPaymentRemainderEmail(data){
       // send automatic reminder email by event

@@ -71,20 +71,6 @@ export class SetDataService {
   }
 
 
-  setPaymentDay(buildingId, paymentDay){
-    // set or update payment day
-    let ref = this.db.collection('buildings')
-    .doc(buildingId)
-
-    ref.update({
-      payment_day: paymentDay
-    }).then(()=>{
-      console.log('payment day successfully updated');
-      
-    })
-  }
-
-
   setFirestoreTriggerPaymentEmail(buildingId,rowId){
     // set 'manualEmail' boolean to DB to trigger payment email sending
     let ref = this.db.collection('payment_tables/')
