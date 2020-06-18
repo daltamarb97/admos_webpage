@@ -7,15 +7,17 @@
 </div>
 
 <div class="main-content">
-    <mat-card class="card">
+    <mat-card class="card" *ngFor="let item of announcementList">
         <mat-card-header class="header">
-            <h6 style="color: white">29 de febrero</h6>
+            <mat-card-subtitle style="color: white">
+                {{item.timestamp.toDate() | date }}
+            </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="content">
-            <p>Titulo</p>
+            <p>{{item.title}}</p>
         </mat-card-content>
         <mat-card-actions class="buttons">
-            <button mat-button>ver anuncio completo</button>
+            <button mat-button (click)="viewAnnouncementBody(item)">ver anuncio completo</button>
         </mat-card-actions>
     </mat-card>
 </div>

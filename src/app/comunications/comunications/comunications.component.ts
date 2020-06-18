@@ -48,7 +48,12 @@ export class ComunicationsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    if(this.authService.userInfo){
+      this.user = this.authService.userInfo;
+      this.getChatRoomNames();
+    }else{
       this.getUserId();
+    }
   }
 
 
@@ -57,7 +62,7 @@ export class ComunicationsComponent implements OnInit {
   }
 
 
-  getUserId(){
+  private getUserId(){
     this.authService.getCurrentUser()
       .pipe(
         takeUntil(this.destroy$)
@@ -84,7 +89,7 @@ export class ComunicationsComponent implements OnInit {
 
    getChatRoomNames(){
     // get chat rooms names
-    this.fetchData.getChatRooms(this.userId)
+    this.fetchData.getChatRooms(this.user.userId)
     .subscribe(data => {
       data.map(a=>{
         if(a.type === 'added'){

@@ -14,6 +14,7 @@ import { MaterialRoutes } from './material.routing';
 
 import { DialogOverviewComponent} from './dialog/dialog.component';
 import { ChatCreationDialogComponent } from './chat-creation-dialog/chat-creation-dialog.component';
+import { BoardDialogComponent } from './board-dialog/board-dialog.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { ChatCreationDialogComponent } from './chat-creation-dialog/chat-creatio
   declarations: [
     DialogOverviewComponent,
     ChatCreationDialogComponent,
+    BoardDialogComponent,
   ]
 })
 export class MaterialComponentsModule {}

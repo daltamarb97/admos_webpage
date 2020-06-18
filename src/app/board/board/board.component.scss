@@ -19,16 +19,20 @@
     display: flex;
     justify-content: flex-end;
     background-color: blue;
-    max-height: 70px;
 }
 
 .content{
     display: flex;
     justify-content: center;
-    border-bottom:  0.2px solid grey;
+    border-bottom:  0.2px solid #c9c8c7;
+    margin-bottom: 0px;
 }
 
 .buttons{
     display: flex;
     justify-content: center;
+
+    button{
+        margin-bottom: 10px;
+    }
 }

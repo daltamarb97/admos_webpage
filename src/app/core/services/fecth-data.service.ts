@@ -66,15 +66,6 @@ export class FecthDataService {
   }
 
 
-  getPaymentDay(buildingId){
-    // get current payment day
-    let ref = this.db.collection('buildings/')
-    .doc(buildingId)
-
-    return ref.get();
-  }
-
-
   getColumnNames(){
     // get metadata of table payments
     let ref = this.db.collection('payments_metadata')
@@ -135,6 +126,21 @@ export class FecthDataService {
   }
 
   // END OF CHATS AND COMUNICATIONS SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+  // BOARD SERVICES
+    
+  getBoardAnnouncements(buildingId){
+    // get all the announcements for a building
+    let ref = this.db.collection('board')
+    .doc(buildingId)
+    .collection('announcements')
+    
+    return ref.stateChanges(['added']);
+  }
+
+  // END OF BOARD SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 

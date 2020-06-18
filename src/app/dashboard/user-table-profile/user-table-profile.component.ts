@@ -68,7 +68,6 @@ export class UserTableProfileComponent implements OnInit {
     .pipe(
       takeUntil(this.destroy$)
     ).subscribe(data => {
-      console.log('aqui hay nueva data de pagos');
       const dataArray = data;
       const finalArray = dataArray.map(e => {
         e.timestamp = e.timestamp.toDate();

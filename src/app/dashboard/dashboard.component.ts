@@ -31,11 +31,6 @@ export class DashboardComponent implements OnInit {
     file:any;
     arrayBuffer:any;
     filelist = [];
-    dayList: number[] = [1, 2, 3, 4, 5, 6, 7, 
-      8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
-      18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
-      28, 29, 30, 31];
-    firebaseDay:number;
     showSpinner:boolean = false;
     userId: string;
     user:any;  // userInfo variable
@@ -60,6 +55,23 @@ export class DashboardComponent implements OnInit {
 
 
     ngOnInit() {
+      if(this.authService.userInfo){
+        this.user = this.authService.userInfo;
+        this.getInitialTableData();
+      }else{
+        this.getUserId();
+      }
+    }
+
+
+    ngOnDestroy(){
+      this.destroy$.next();
+      this.destroy$.complete();
+      console.log('me destrui');
+    }
+
+
+    private getUserId(){
       this.authService.getCurrentUser()
       .pipe(
         takeUntil(this.destroy$)
@@ -68,13 +80,6 @@ export class DashboardComponent implements OnInit {
         this.userId = user.uid; 
         this.getUserInfo();
       });
-    }
-
-
-    ngOnDestroy(){
-      this.destroy$.next();
-      this.destroy$.complete();
-      console.log('me destrui');
     }
 
 
@@ -97,7 +102,6 @@ export class DashboardComponent implements OnInit {
         // assign userInfo value to global variable
         this.authService.userInfo = this.user;
         // Execute functions that rely on userInfo data 
-        this.getCurrentPaymentDay();
         this.getInitialTableData(); 
       })
     }
@@ -113,16 +117,6 @@ export class DashboardComponent implements OnInit {
         console.log('me active');
 
         this.dataSource.data = data
-      })
-    }
-
-
-    private getCurrentPaymentDay(){
-      // get current payment day from firebase
-      this.fetchData.getPaymentDay(this.user.activeBuilding)
-      .subscribe((day)=>{
-        let paymentDay = day.data().payment_day;
-        this.firebaseDay = paymentDay;
       })
     }
 
