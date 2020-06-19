@@ -1,13 +1,14 @@
 <div class="first-button">
     <button mat-raised-button color="primary" 
-    style="width: 400px; height: 100px;">
+    style="width: 400px; height: 100px;"
+    (click)="creationAnnouncement()">
         Crear Anuncio
         <mat-icon>add</mat-icon>
     </button>
 </div>
 
 <div class="main-content">
-    <mat-card class="card" *ngFor="let item of announcementList">
+    <mat-card class="card" *ngFor="let item of announcementList ; let i = index">
         <mat-card-header class="header">
             <mat-card-subtitle style="color: white">
                 {{item.timestamp.toDate() | date }}
@@ -17,7 +18,7 @@
             <p>{{item.title}}</p>
         </mat-card-content>
         <mat-card-actions class="buttons">
-            <button mat-button (click)="viewAnnouncementBody(item)">ver anuncio completo</button>
+            <button mat-button (click)="viewAnnouncementBody(item, i)">ver anuncio completo</button>
         </mat-card-actions>
     </mat-card>
 </div>

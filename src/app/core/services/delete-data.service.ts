@@ -54,4 +54,31 @@ export class DeleteDataService {
     })
   }
 
+
+// END OF COMUNICATIONS AND CHAT
+
+// --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+// BOARD SERVICES
+
+  deleteAnnouncement(buildingId:string, announcementId:string){
+    // update body or title of the announcement
+    let ref = this.db.collection('board')
+    .doc(buildingId)
+    .collection('announcements')
+    .doc(announcementId)
+
+    return ref.delete()
+    .then(()=>{
+      console.log('announcement deleted');
+    }).catch(err => {
+      console.log('an error happened: ' +err);
+    });
+  }
+
+
+// END OF BOARD SERVICES
+
+// --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
 }

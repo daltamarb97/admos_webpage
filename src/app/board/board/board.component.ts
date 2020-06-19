@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
 
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -7,9 +8,16 @@ import { takeUntil, map } from 'rxjs/operators';
 // services
 import { FecthDataService } from '../../core/services/fecth-data.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SetDataService } from '../../core/services/set-data.service';
+import { DeleteDataService } from '../../core/services/delete-data.service';
+import { HoldDataService } from '../../core/services/hold-data.service';
+
 
 // dialog material
 import { BoardDialogComponent } from '../../material-component/board-dialog/board-dialog.component';
+
+
+
 
 
 @Component({
@@ -25,9 +33,13 @@ export class BoardComponent implements OnInit {
   announcementList: Array<any> = []; // array of announcements used in the html
   constructor(
     public dialog: MatDialog,
+    private router: Router,
     // services
     private fetchData: FecthDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private setData: SetDataService,
+    private deleteData: DeleteDataService,
+    private holdData: HoldDataService
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +49,12 @@ export class BoardComponent implements OnInit {
     }else{
       this.getUserId();
     }
+  }
+
+
+  ngOnDestroy(){
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -68,26 +86,87 @@ export class BoardComponent implements OnInit {
 
   private getAnnouncements(){
     // get announcements of building
+    this.announcementList = [];
     this.fetchData.getBoardAnnouncements(this.user.activeBuilding)
+    .pipe(
+      takeUntil(this.destroy$)
+    )
     .subscribe((announcements)=>{
       announcements.map(a => {
         const announce = a.payload.doc.data();
         this.announcementList.push(announce);
       });
-    })
-
-
+    });
   }
 
 
-  viewAnnouncementBody(item){
-    item.action = 'view'
-    console.log(item);
-    
-     
+  creationAnnouncement(){
+    // create a new announcement
+    const data = {
+      action: 'create'
+    };
+    const dialogRef = this.dialog.open(BoardDialogComponent,{
+      data: data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      const event = result.event;
+      if(event === 'create'){
+        const resultData = {
+          title: result.data.title,
+          body: result.data.body,
+          timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp()
+        };
+        this.createAnnouncement(resultData);
+      }
+    })
+  }
+
+
+  viewAnnouncementBody(item, i){
+    item.action = 'view';
+    const index = i;
     const dialogRef = this.dialog.open(BoardDialogComponent,{
       data: item
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      const event = result.event;
+      if(event === 'edit'){
+        const resultData = {
+          announcementId: item.announcementId,
+          title: result.data.title,
+          body: result.data.body,
+          timestamp: result.data.timestamp
+        };
+        this.updateAnnouncement(item, resultData);
+        this.getAnnouncements();
+      }else if(event === 'delete'){
+        this.deleteAnnouncement(item);
+        this.getAnnouncements();
+      }
+    })
+  }
+
+
+  private updateAnnouncement(item, data){
+    // edition of announcement
+    this.setData.updateAnnouncement(this.user.activeBuilding, item.announcementId, data);
+  }
+
+
+  private deleteAnnouncement(item){
+    // elimination of announcement
+    this.deleteData.deleteAnnouncement(this.user.activeBuilding, item.announcementId);
+  }
+
+
+  private createAnnouncement(data){
+    // creation of new announcement
+    this.setData.createAnnouncement(this.user.activeBuilding, data)
+    .then(()=>{
+      window.location.reload();
+    })
   }
 
 }

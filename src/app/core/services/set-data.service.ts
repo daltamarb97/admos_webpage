@@ -290,5 +290,47 @@ export class SetDataService {
   // END OF CHATS AND COMUNICATIONS SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+  // BOARD SERVICES
+
+  createAnnouncement(buildingId:string, data:object){
+    // update body or title of the announcement
+    let ref = this.db.collection('board')
+    .doc(buildingId)
+    .collection('announcements')
+
+    return ref.add(data)
+    .then((docRef)=>{
+      const announcementId = docRef.id;
+      // update document with announcementId
+      ref.doc(announcementId)
+      .update({
+        announcementId : announcementId
+      });
+
+      console.log('creation of announcement done');
+      
+    });
+  }
+
+  updateAnnouncement(buildingId:string, announcementId:string, data:object){
+    // update body or title of the announcement
+    let ref = this.db.collection('board')
+    .doc(buildingId)
+    .collection('announcements')
+    .doc(announcementId)
+
+    return ref.update(data)
+    .then(()=>{
+      console.log('announcement updated');
+    }).catch(err => {
+      console.log('an error happened: ' +err);
+    });
+  }
+  
+  // END OF BOARD SERVICES
+
+  // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
   
 }

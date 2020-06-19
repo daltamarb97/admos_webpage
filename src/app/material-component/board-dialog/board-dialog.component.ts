@@ -14,12 +14,12 @@ export class BoardDialogComponent {
     public dialogRef: MatDialogRef<BoardDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.local_data = {...data},
+    this.local_data = {...data}
     this.action = this.local_data.action;
-    this.local_data.timestamp = this.local_data.timestamp.toDate();
 
     if(this.action === 'view'){
       this.isReadOnly = true;
+      this.local_data.timestamp = this.local_data.timestamp.toDate();
     }
   }
 
@@ -34,12 +34,17 @@ export class BoardDialogComponent {
 
 
   editAnnouncement(){
-    this.dialogRef.close({event: 'edit'});
+    this.dialogRef.close({event: 'edit', data: this.local_data});
   }
 
   
   deleteAnnouncement(){
     this.dialogRef.close({event: 'delete'});
+  }
+
+
+  createAnnouncement(){
+    this.dialogRef.close({event: 'create', data: this.local_data});
   }
 }
 

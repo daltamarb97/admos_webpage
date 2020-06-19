@@ -59,6 +59,7 @@ export class ComunicationsComponent implements OnInit {
 
   ngOnDestroy(){
     this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
