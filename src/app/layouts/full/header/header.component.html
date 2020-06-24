@@ -7,7 +7,7 @@
 <mat-menu #profile="matMenu" class="mymegamenu">
     <button mat-menu-item>
         <mat-icon>settings</mat-icon> Configuracion </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="goToProfile()">
         <mat-icon>account_box</mat-icon> Perfil </button>
     <button mat-menu-item (click)="logOut()">
         <mat-icon>exit_to_app</mat-icon> Cerrar Sesión </button>

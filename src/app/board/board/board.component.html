@@ -9,7 +9,7 @@
 
 <div class="main-content">
     <mat-card class="card" *ngFor="let item of announcementList ; let i = index">
-        <mat-card-header class="header">
+        <mat-card-header class="header"  [ngStyle]="{'background-color': item.colorHeader}">
             <mat-card-subtitle style="color: white">
                 {{item.timestamp.toDate() | date }}
             </mat-card-subtitle>

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
 
 import { Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 // services
 import { FecthDataService } from '../../core/services/fecth-data.service';
@@ -31,9 +30,10 @@ export class BoardComponent implements OnInit {
   userId:string;
   user:any; // variable for user info
   announcementList: Array<any> = []; // array of announcements used in the html
+  backColor:string; // color of header background
+  listOfBacgroundColors: Array<string> = ['#ADD8E6', '#F5B6C1', '#DDBDF1', '#90EE90'];
   constructor(
     public dialog: MatDialog,
-    private router: Router,
     // services
     private fetchData: FecthDataService,
     private authService: AuthService,
@@ -92,10 +92,17 @@ export class BoardComponent implements OnInit {
       takeUntil(this.destroy$)
     )
     .subscribe((announcements)=>{
-      announcements.map(a => {
-        const announce = a.payload.doc.data();
-        this.announcementList.push(announce);
-      });
+      this.announcementList = announcements;
+      this.colorBackgroundChange();
+    });
+  }
+
+
+  private colorBackgroundChange(){
+    // change the color of the background of cards headers 
+    this.announcementList.forEach((el)=>{
+      const indexOfColor = Math.floor(Math.random()*this.listOfBacgroundColors.length);
+      el.colorHeader = this.listOfBacgroundColors[indexOfColor];
     });
   }
 
@@ -125,7 +132,6 @@ export class BoardComponent implements OnInit {
 
   viewAnnouncementBody(item, i){
     item.action = 'view';
-    const index = i;
     const dialogRef = this.dialog.open(BoardDialogComponent,{
       data: item
     });
@@ -140,11 +146,9 @@ export class BoardComponent implements OnInit {
           timestamp: result.data.timestamp
         };
         this.updateAnnouncement(item, resultData);
-        this.getAnnouncements();
       }else if(event === 'delete'){
         this.deleteAnnouncement(item);
-        this.getAnnouncements();
-      }
+      }else{}
     })
   }
 
@@ -163,10 +167,7 @@ export class BoardComponent implements OnInit {
 
   private createAnnouncement(data){
     // creation of new announcement
-    this.setData.createAnnouncement(this.user.activeBuilding, data)
-    .then(()=>{
-      window.location.reload();
-    })
+    this.setData.createAnnouncement(this.user.activeBuilding, data);
   }
 
 }

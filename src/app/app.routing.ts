@@ -50,6 +50,15 @@ export const AppRoutes: Routes = [
         loadChildren:
           () => import('./board/board.module').then(m => m.BoardModule)
       },
+      {
+        path: 'perfil',
+        canActivate: [
+          CurrentUserGuard,
+          EmailVerifiedGuardService
+        ],
+        loadChildren:
+          () => import('./profile/profile.module').then(m => m.ProfileModule)
+      },
     ]
   },
   {

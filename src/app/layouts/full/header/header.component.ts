@@ -21,7 +21,13 @@ export class AppHeaderComponent {
     // logging out and redirecting to login
     this.authService.logOut()
     .then(()=>{
-      this.router.navigate(['/auth/login'])
-    })
+      this.router.navigate(['/auth/login']);
+    });
+  }
+
+
+  goToProfile(){
+    // take user to their profile page
+    this.router.navigate(['perfil']);
   }
 }

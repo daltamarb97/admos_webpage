@@ -135,9 +135,9 @@ export class FecthDataService {
     // get all the announcements for a building
     let ref = this.db.collection('board')
     .doc(buildingId)
-    .collection('announcements')
+    .collection('announcements', ref => ref.orderBy('timestamp', 'desc'))
     
-    return ref.stateChanges(['added']);
+    return ref.valueChanges();
   }
 
   // END OF BOARD SERVICES
