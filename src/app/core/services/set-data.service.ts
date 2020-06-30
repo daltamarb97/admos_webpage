@@ -106,7 +106,8 @@ export class SetDataService {
     return ref.add(buildingData).then((docRef)=>{
       let buildingId = docRef.id;
       ref.doc(buildingId).update({
-        buildingId: buildingId
+        buildingId: buildingId,
+        buildingPassword: this.createRandomBuildingPassword()
       }).then(()=>{
         // creates user with admin roperty 
         this.createNewAdminUser(adminData, adminId, buildingId);
@@ -122,6 +123,18 @@ export class SetDataService {
         );
       })
     })
+  }
+
+
+  private createRandomBuildingPassword(){
+    // creation of random building pasword for residents registration
+      let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890*&^%$#@!";
+      const lengthOfCode = 10;
+      let text = "";
+      for (let i = 0; i < lengthOfCode; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
   }
 
 

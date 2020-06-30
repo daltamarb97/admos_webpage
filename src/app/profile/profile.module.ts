@@ -5,8 +5,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProfileRoutingModule } from './profile-routing.module';
 import { ProfilepageComponent } from './profilepage/profilepage.component';
 
-import { ChartistModule } from 'ng-chartist';
 import { DemoMaterialModule } from '../demo-material-module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -15,8 +15,8 @@ import { DemoMaterialModule } from '../demo-material-module';
     CommonModule,
     DemoMaterialModule,
     FlexLayoutModule,
-    ChartistModule,
-    ProfileRoutingModule
+    ProfileRoutingModule,
+    FormsModule
   ]
 })
 export class ProfileModule { }

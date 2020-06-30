@@ -41,6 +41,7 @@ import {PlatformModule} from '@angular/cdk/platform';
 import {ObserversModule} from '@angular/cdk/observers';
 import {PortalModule} from '@angular/cdk/portal';
 
+
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
  */
@@ -85,7 +86,7 @@ import {PortalModule} from '@angular/cdk/portal';
     ObserversModule,
     OverlayModule,
     PlatformModule,
-    PortalModule,
+    PortalModule
   ]
 })
 export class DemoMaterialModule {}
