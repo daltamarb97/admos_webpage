@@ -10,6 +10,7 @@ import { ChatCreationDialogComponent } from '../../material-component/chat-creat
 
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { HoldDataService } from '../../core/services/hold-data.service';
 
 export class currentRoomData {
   name:string;
@@ -27,8 +28,7 @@ export class ComunicationsComponent implements OnInit {
   destroy$: Subject<void> = new Subject();
 
   userId:string;
-  user:any;   //component variable for global userInfo var
-
+  activeBuilding:string;
   chatRooms:Array<any> = [];  // list of names of rooms
   chatMessages: Array<any> = []; // array of messages of specific room
   currentMessage:string; // message to be send
@@ -40,7 +40,7 @@ export class ComunicationsComponent implements OnInit {
   constructor(
     private fetchData: FecthDataService,
     private setData: SetDataService,
-    private authService: AuthService,
+    private holdData: HoldDataService,
     private deleteData: DeleteDataService,
     // UI components
     public dialog: MatDialog
@@ -48,12 +48,9 @@ export class ComunicationsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    if(this.authService.userInfo){
-      this.user = this.authService.userInfo;
-      this.getChatRoomNames();
-    }else{
-      this.getUserId();
-    }
+    this.userId = this.holdData.userId;
+    this.activeBuilding = this.holdData.userInfo.activeBuilding;
+    this.getChatRoomNames();
   }
 
 
@@ -63,34 +60,9 @@ export class ComunicationsComponent implements OnInit {
   }
 
 
-  private getUserId(){
-    this.authService.getCurrentUser()
-      .pipe(
-        takeUntil(this.destroy$)
-      )
-      .subscribe(user => {
-        this.userId = user.uid; 
-        this.getUserInfo();
-      });
-  }
-
-
-  getUserInfo(){
-    // get user Info to be used
-    this.fetchData.getUserInfo(this.userId)
-    .subscribe(user=>{
-      this.user = user.data();
-      // assign userInfo value to global variable
-      this.authService.userInfo = this.user;
-      // execute functions thta rely on userInfo
-      this.getChatRoomNames();
-    })
-  }
-
-
    getChatRoomNames(){
     // get chat rooms names
-    this.fetchData.getChatRooms(this.user.userId)
+    this.fetchData.getChatRooms(this.userId)
     .subscribe(data => {
       data.map(a=>{
         if(a.type === 'added'){
@@ -120,7 +92,7 @@ export class ComunicationsComponent implements OnInit {
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
     this.fetchData.getMessagesFromSpecificRoom(
-      this.user.activeBuilding, 
+      this.activeBuilding, 
       data.roomId
     ).subscribe(messages => {  
       messages.map(m=>{
@@ -136,7 +108,7 @@ export class ComunicationsComponent implements OnInit {
     this.currentRoomParticipants = []; //clear the array on click
     // get participants of current room
     this.fetchData.getParticipantsFromSpecificRoom(
-      this.user.activeBuilding, 
+      this.activeBuilding, 
       this.currentRoomData.id
     ).subscribe(participants => {
       participants.map(p=>{
@@ -148,7 +120,7 @@ export class ComunicationsComponent implements OnInit {
 
 
   addChatRoom(){
-    const dialogRef = this.dialog.open(ChatCreationDialogComponent, {data: this.user.activeBuilding});
+    const dialogRef = this.dialog.open(ChatCreationDialogComponent, {data: this.activeBuilding});
 
     dialogRef.afterClosed()
     .subscribe(result =>{
@@ -161,7 +133,7 @@ export class ComunicationsComponent implements OnInit {
       const participants: Array<any> = result.data.participants;
 
       this.setData.createChatRoom(
-        this.user.activeBuilding, 
+        this.activeBuilding, 
         roomData, 
         this.userId,
         participants
@@ -173,14 +145,14 @@ export class ComunicationsComponent implements OnInit {
   sendMessage(){
     // send message in specific room
     const messageData = {
-      name: this.user.name,
-      lastname: this.user.lastname,
+      name: this.holdData.userInfo.name,
+      lastname: this.holdData.userInfo.lastname,
       msg: this.currentMessage,
       timestamp: Date.now(),
       userId: this.userId
     }
 
-    this.setData.sendChatMessage(this.user.activeBuilding, this.currentRoomData.id, messageData)
+    this.setData.sendChatMessage(this.activeBuilding, this.currentRoomData.id, messageData)
     .then(()=>{
       // put the chat input in blank
       this.currentMessage = '';
@@ -194,7 +166,7 @@ export class ComunicationsComponent implements OnInit {
     dialogRef.afterClosed()
     .subscribe(result => {
       if(result.data === 'delete'){
-        this.deleteData.deleteChatRoom(this.user.activeBuilding, this.currentRoomData.id, this.userId);
+        this.deleteData.deleteChatRoom(this.activeBuilding, this.currentRoomData.id, this.userId);
       }else{
         // do nothing
       }

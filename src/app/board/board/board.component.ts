@@ -28,7 +28,6 @@ export class BoardComponent implements OnInit {
   destroy$:  Subject<void> = new Subject();
 
   userId:string;
-  user:any; // variable for user info
   announcementList: Array<any> = []; // array of announcements used in the html
   backColor:string; // color of header background
   listOfBacgroundColors: Array<string> = ['#ADD8E6', '#F5B6C1', '#DDBDF1', '#90EE90'];
@@ -36,19 +35,14 @@ export class BoardComponent implements OnInit {
     public dialog: MatDialog,
     // services
     private fetchData: FecthDataService,
-    private authService: AuthService,
     private setData: SetDataService,
     private deleteData: DeleteDataService,
     private holdData: HoldDataService
   ) { }
 
   ngOnInit(): void {
-    if(this.authService.userInfo){
-      this.user = this.authService.userInfo;
-      this.getAnnouncements();
-    }else{
-      this.getUserId();
-    }
+    this.userId = this.holdData.userId;
+    this.getAnnouncements();
   }
 
 
@@ -58,36 +52,10 @@ export class BoardComponent implements OnInit {
   }
 
 
-  private getUserId(){
-    // get userId and then calls getUserInfo function
-    this.authService.getCurrentUser()
-      .pipe(
-        takeUntil(this.destroy$)
-      )
-      .subscribe(user => {
-        this.userId = user.uid; 
-        this.getUserInfo();
-      });
-  }
-
-
-  private getUserInfo(){
-    // get user Info to be used
-    this.fetchData.getUserInfo(this.userId)
-    .subscribe(user=>{
-      this.user = user.data();
-      // assign userInfo value to global variable
-      this.authService.userInfo = this.user;
-      // functions that rely on userInfo
-      this.getAnnouncements();
-    })
-  }
-
-
   private getAnnouncements(){
     // get announcements of building
     this.announcementList = [];
-    this.fetchData.getBoardAnnouncements(this.user.activeBuilding)
+    this.fetchData.getBoardAnnouncements(this.holdData.userInfo.activeBuilding)
     .pipe(
       takeUntil(this.destroy$)
     )
@@ -155,19 +123,19 @@ export class BoardComponent implements OnInit {
 
   private updateAnnouncement(item, data){
     // edition of announcement
-    this.setData.updateAnnouncement(this.user.activeBuilding, item.announcementId, data);
+    this.setData.updateAnnouncement(this.holdData.userInfo.activeBuilding, item.announcementId, data);
   }
 
 
   private deleteAnnouncement(item){
     // elimination of announcement
-    this.deleteData.deleteAnnouncement(this.user.activeBuilding, item.announcementId);
+    this.deleteData.deleteAnnouncement(this.holdData.userInfo.activeBuilding, item.announcementId);
   }
 
 
   private createAnnouncement(data){
     // creation of new announcement
-    this.setData.createAnnouncement(this.user.activeBuilding, data);
+    this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, data);
   }
 
 }

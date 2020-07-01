@@ -15,7 +15,7 @@
             <mat-card-title>Nombre edificio actual</mat-card-title>
             <mat-card-subtitle>direccion edificio</mat-card-subtitle>
         </mat-card-header>
-        <img mat-card-image src="../../../assets/images/MYKONOS_BORRAR.jpg" alt="Building Picture">
+        <img mat-card-image src="https://i.imgur.com/6vhKmQV.jpg" alt="Building Picture"> 
         <mat-card-content>
             <section class="password-input">
                 <mat-form-field>
@@ -33,12 +33,12 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     
-                    <mat-list role="list" class="staff-row" *ngFor="let test of testList">
-                        <mat-list-item role="listitem">{{test}}</mat-list-item>
-                        <mat-icon color="warn" (click)='testClick(test)'>delete</mat-icon>
+                    <mat-list role="list" class="staff-row" *ngFor="let d of doormanList">
+                        <mat-list-item role="listitem">{{d.email}}</mat-list-item>
+                        <mat-icon color="warn" (click)='testClick(d)'>delete</mat-icon>
                     </mat-list>
 
-                    <button mat-stroked-button color='primary' (click)="addDoorman()">Agregar Portero</button>
+                    <button mat-stroked-button color='primary' (click)="addDoorman()" *ngIf="showAddDoormanButton">Agregar Cuenta de Portería</button>
                 </mat-expansion-panel>
             </mat-accordion>
         </mat-card-content>

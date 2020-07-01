@@ -22,11 +22,12 @@ export class ProfileDialogComponent{
 
 
   onNoClick(){
-    this.dialogRef.close();
+    this.action = 'cancel'
+    this.dialogRef.close({event: this.action});
   }
 
   createDoormanAccount(){
-    this.dialogRef.close({data: this.local_data});
+    this.dialogRef.close({data: this.local_data, event: this.action});
   }
 
   copyMessage(){

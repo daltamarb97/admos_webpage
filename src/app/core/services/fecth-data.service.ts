@@ -6,8 +6,6 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class FecthDataService {
 
-  userInfo:object;
-  
   constructor(private db: AngularFirestore) {
     
    }
@@ -18,8 +16,9 @@ export class FecthDataService {
     let ref = this.db.collection('users')
     .doc(userId)
 
-    return ref.get();
+    return ref.valueChanges();
   }
+
 
   // BUIDLING SERVICES
 
@@ -28,12 +27,12 @@ export class FecthDataService {
     let ref = this.db.collection('buildings')
     .doc(buildingId)
 
-    return ref.get();
+    return ref.valueChanges();
   }
 
 
   getBuidlingResidents(buildingId){
-    // get building residents 
+    // get building residents
     let ref = this.db.collection('buildings')
     .doc(buildingId)
     .collection('residents')
@@ -43,7 +42,7 @@ export class FecthDataService {
 
 
   getBuidlingEmployees(buildingId){
-    // get building residents 
+    // get building employees (use in profile) 
     let ref = this.db.collection('buildings')
     .doc(buildingId)
     .collection('employees')

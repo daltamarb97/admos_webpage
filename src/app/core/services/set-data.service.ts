@@ -171,6 +171,25 @@ export class SetDataService {
     })
   }
 
+
+  doormanCreationTrigger(buildingId: string, doormanData:object){
+    // create firestore trigger to shot cloud functions which creates doorman account
+    let ref = this.db.collection('buildings')
+    .doc(buildingId)
+    .collection('employees')
+
+    return ref.add(doormanData)
+    .then(docRef => {
+      const doormanId = docRef.id;
+      ref.doc(doormanId)
+      .update({
+        doormanId: doormanId,
+        name: 'Portería',
+        buildingId: buildingId
+      }).catch(err => console.log(err))
+    }).catch(err => console.log(err))
+  }
+
   // END USER CREATION SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*

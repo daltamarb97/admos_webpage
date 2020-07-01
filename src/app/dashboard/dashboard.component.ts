@@ -27,20 +27,20 @@ import { HoldDataService } from '../core/services/hold-data.service';
 })
 export class DashboardComponent implements OnInit {
      
-    destroy$: Subject<void> = new Subject()
+    destroy$: Subject<void> = new Subject();
     file:any;
     arrayBuffer:any;
     filelist = [];
     showSpinner:boolean = false;
     userId: string;
-    user:any;  // userInfo variable
+    activeBuilding: string;
 
     constructor(
       // services
       private fetchData: FecthDataService,
       private setData: SetDataService,
       private deleteData: DeleteDataService,
-      private authService: AuthService,
+      // private authService: AuthService,
       private holdData: HoldDataService,
       // UI components
       public dialog: MatDialog,
@@ -55,12 +55,8 @@ export class DashboardComponent implements OnInit {
 
 
     ngOnInit() {
-      if(this.authService.userInfo){
-        this.user = this.authService.userInfo;
-        this.getInitialTableData();
-      }else{
-        this.getUserId();
-      }
+      this.activeBuilding = this.holdData.userInfo.activeBuilding;
+      this.getInitialTableData();
     }
 
 
@@ -68,18 +64,6 @@ export class DashboardComponent implements OnInit {
       this.destroy$.next();
       this.destroy$.complete();
       console.log('me destrui');
-    }
-
-
-    private getUserId(){
-      this.authService.getCurrentUser()
-      .pipe(
-        takeUntil(this.destroy$)
-      )
-      .subscribe(user => {
-        this.userId = user.uid; 
-        this.getUserInfo();
-      });
     }
 
 
@@ -94,23 +78,10 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    private getUserInfo(){
-      // get user Info to be used
-      this.fetchData.getUserInfo(this.userId)
-      .subscribe(user=>{
-        this.user = user.data();
-        // assign userInfo value to global variable
-        this.authService.userInfo = this.user;
-        // Execute functions that rely on userInfo data 
-        this.getInitialTableData(); 
-      })
-    }
-
-
     private getInitialTableData(){
       // get current table data on init
       this.fetchData.getTableData(
-        this.user.activeBuilding,
+        this.activeBuilding,
       ).pipe(
         takeUntil(this.destroy$)
       ).subscribe(data => {  
@@ -141,7 +112,7 @@ export class DashboardComponent implements OnInit {
           
           // set read data to firebase 
           for(let row of this.filelist){
-            this.setData.setTableData(this.user.activeBuilding, row)
+            this.setData.setTableData(this.activeBuilding, row)
             .then(()=>{
               console.log('data in firebase');
               
@@ -193,32 +164,32 @@ export class DashboardComponent implements OnInit {
 
     private updateRowData(data){
       // update firebase info for that specific row
-      this.setData.updateSingleRow(this.user.activeBuilding, data.rowId, data)
+      this.setData.updateSingleRow(this.activeBuilding, data.rowId, data)
     }
 
 
     private updatePendingToPay(data, paymentData){
       // update firebase info for that specific row
-      this.setData.updatePendingToPay(this.user.activeBuilding, data.rowId, data.pending_to_pay, paymentData)      
+      this.setData.updatePendingToPay(this.activeBuilding, data.rowId, data.pending_to_pay, paymentData)      
     }
 
 
     private deleteRowData(data){
       // delete data of specific row from firebase
-      this.deleteData.deleteSingleTableRow(this.user.activeBuilding, data.rowId)
+      this.deleteData.deleteSingleTableRow(this.activeBuilding, data.rowId)
     }
 
 
     private setRowData(data){
       // Set row data manually
-      this.setData.setTableData(this.user.activeBuilding, data)
+      this.setData.setTableData(this.activeBuilding, data)
     }
 
     
     sendPaymentRemainderEmail(data){
       // send automatic reminder email by event
       this.showSpinner = true;
-      this.setData.setFirestoreTriggerPaymentEmail(this.user.activeBuilding, data.rowId);
+      this.setData.setFirestoreTriggerPaymentEmail(this.activeBuilding, data.rowId);
       setTimeout(() => {
         this.showSpinner = false;
         console.log('deberia desaparecer el spinner');

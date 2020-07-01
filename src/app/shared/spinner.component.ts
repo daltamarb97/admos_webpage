@@ -13,6 +13,7 @@ import {
   NavigationError
 } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import { HoldDataService } from '../core/services/hold-data.service';
 
 @Component({
   selector: 'app-spinner',
@@ -27,12 +28,15 @@ import { DOCUMENT } from '@angular/common';
 export class SpinnerComponent implements OnDestroy {
   public isSpinnerVisible = true;
 
+  
+
   @Input()
   public backgroundColor = 'rgba(0, 115, 170, 0.69)';
 
   constructor(
     private router: Router,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private holdData: HoldDataService
   ) {
     this.router.events.subscribe(
       event => {
@@ -41,10 +45,10 @@ export class SpinnerComponent implements OnDestroy {
         } else if (
           event instanceof NavigationEnd ||
           event instanceof NavigationCancel ||
-          event instanceof NavigationError
+          event instanceof NavigationError 
         ) {
           this.isSpinnerVisible = false;
-        }
+        } 
       },
       () => {
         this.isSpinnerVisible = false;

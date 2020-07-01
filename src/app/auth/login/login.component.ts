@@ -5,6 +5,11 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 // services
 import { AuthService } from '../../core/services/auth.service';
 import { FecthDataService } from '../../core/services/fecth-data.service';
+import { HoldDataService } from '../../core/services/hold-data.service';
+
+
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -15,19 +20,27 @@ import { FecthDataService } from '../../core/services/fecth-data.service';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  user:any;
+  destroy$: Subject<void> = new Subject()
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     // services
     private authService: AuthService,
-    private fetchData: FecthDataService
+    private fetchData: FecthDataService,
+    private holdData: HoldDataService
   ) { 
     this.buildForm();
   }
 
   ngOnInit(): void {
+  }
+
+
+  ngOnDestroy(){
+    this.destroy$.next();
+    this.destroy$.complete();
+    console.log('me destrui');
   }
 
 
@@ -39,9 +52,12 @@ export class LoginComponent implements OnInit {
       .then((result)=>{
         // get user info to check isAdmin property
         this.fetchData.getUserInfo(result.user.uid)
+        .pipe(
+          takeUntil(this.destroy$)
+        )
         .subscribe((user)=>{
-          this.user = user.data();
-          if(this.user.isAdmin !== true){
+          this.holdData.userInfo = user;
+          if(this.holdData.userInfo.isAdmin !== true){
             // if user is not admin automatically log them out in order to execute guards
             alert('sólo puedes ingresar si tienes perfil de administrador')
             this.authService.logOut();
