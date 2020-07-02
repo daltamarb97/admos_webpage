@@ -16,6 +16,7 @@ export class ProfileDialogComponent{
     public dialogRef: MatDialogRef<ProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { 
+    // local_data receives data from the component in which this dialog was called
     this.local_data = {... data};
     this.action = this.local_data.action
   }

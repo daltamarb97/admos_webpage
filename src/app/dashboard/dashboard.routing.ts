@@ -5,11 +5,11 @@ import { UserTableProfileComponent } from './user-table-profile/user-table-profi
 
 
 export const DashboardRoutes: Routes = [{
-  path: '',
+  path: '',  
   component: DashboardComponent
 }, 
 {
-  path: ':rowId',
+  path: ':rowId', 
   component: UserTableProfileComponent
 },
 ];

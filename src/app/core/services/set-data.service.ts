@@ -239,6 +239,7 @@ export class SetDataService {
         .update({
           roomId: roomId
         }).then(()=>{
+          // each participant is pushed into specific chat room
           participants.forEach((p)=>{
             if(p.property){
               ref.collection('rooms')
@@ -251,6 +252,7 @@ export class SetDataService {
                 lastname: p.lastname,
                 property: p.property
               }).then(()=>{
+                // push room infor into user node
                 this.setChatRoomInfoInUser(
                   p.userId,  
                   roomId, 
@@ -344,6 +346,7 @@ export class SetDataService {
       
     });
   }
+  
 
   updateAnnouncement(buildingId:string, announcementId:string, data:object){
     // update body or title of the announcement
