@@ -81,4 +81,32 @@ export class DeleteDataService {
 
 // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
+// PROFILE SERVICES
+
+disableDoormanAccountFromDB(buildingId:string, doormanId:string){
+  // disable doorman account from DB , but it is not deleted from Auth
+  // inside collection building it is actually deleted
+  let refBuilding = this.db.collection('buildings')
+  .doc(buildingId)
+  .collection('employees')
+  .doc(doormanId)
+
+  let refUsers = this.db.collection('users')
+  .doc(doormanId)
+
+  return refBuilding.delete()
+  .then(()=>{
+    refUsers.update({
+      disabled: true
+    }).then(()=>{
+      console.log('doorman disabled')
+    })
+  })
+}
+
+
+// END OF PROFILE SERVICES
+
+// --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
 }

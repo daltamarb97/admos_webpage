@@ -20,7 +20,7 @@ import { Subject } from 'rxjs';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  destroy$: Subject<void> = new Subject()
+  destroy$: Subject<void> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SetDataService {
 
-  constructor(private db: AngularFirestore) { }
+  constructor(
+    private db: AngularFirestore,
+    private http: HttpClient
+  ) { }
 
 
   // PAYMENTS TABLE SERVICES
@@ -107,9 +111,10 @@ export class SetDataService {
       let buildingId = docRef.id;
       ref.doc(buildingId).update({
         buildingId: buildingId,
-        buildingPassword: this.createRandomBuildingPassword()
+        buildingPassword: this.createRandomBuildingPassword(),
+        paymentLink: 'Cuenta Gratuita'
       }).then(()=>{
-        // creates user with admin roperty 
+        // creates user with admin property 
         this.createNewAdminUser(adminData, adminId, buildingId);
         // creates default chatRoom for this building
         // General is the default chat room
@@ -138,7 +143,7 @@ export class SetDataService {
   }
 
 
-  private createNewAdminUser(data, userId, buildingId){
+  private createNewAdminUser(data, userId: string, buildingId: string){
     // set new user with admin property on webpage register
     let ref = this.db.collection('users')
     .doc(userId)
@@ -148,14 +153,8 @@ export class SetDataService {
       ref.update({
         userId: userId,
         isAdmin: true,
-        activeBuilding: buildingId
-      }).then(()=>{
-        // set associated buildingId to that admin user
-        ref.collection('buildings')
-        .doc(buildingId)
-        .set({
-          buildingId: buildingId
-        }).then(()=>{          
+        buildingId: buildingId
+      }).then(()=>{          
           // relationate adminId with its specific building
           let buildingRef = this.db.collection('buildings')
             .doc(buildingId);
@@ -163,16 +162,14 @@ export class SetDataService {
             buildingRef.update({
               adminId: userId
             })
-        })
-      })
+        }) 
     }).catch(err =>{
       console.log(err);
-      
     })
   }
 
 
-  doormanCreationTrigger(buildingId: string, doormanData:object){
+  doormanCreationTrigger(buildingId: string, doormanData: any){
     // create firestore trigger to shot cloud functions which creates doorman account
     let ref = this.db.collection('buildings')
     .doc(buildingId)
@@ -180,14 +177,31 @@ export class SetDataService {
 
     return ref.add(doormanData)
     .then(docRef => {
+      // update doorman node inside buildings document
       const doormanId = docRef.id;
       ref.doc(doormanId)
       .update({
         doormanId: doormanId,
-        name: 'Portería',
         buildingId: buildingId
-      }).catch(err => console.log(err))
-    }).catch(err => console.log(err))
+      })
+      .then(()=>{
+        // create doorman user in users node
+        let refUsers = this.db.collection('users')
+        .doc(doormanId)
+
+        refUsers.set({
+          name: doormanData.name,
+          email: doormanData.email,
+          isDoorman: true,
+          buildingId: buildingId,
+          userId: doormanId
+        })
+        .then(()=>console.log('doorman created in users node'))
+        .catch(err => console.log(err))
+    })
+      .catch(err => console.log(err))
+    })   
+    .catch(err => console.log(err))
   }
 
   // END USER CREATION SERVICES
@@ -196,7 +210,7 @@ export class SetDataService {
 
   // CHATS AND COMUNICATIONS SERVICES
 
-  createDefaultChatRoom(buildingId:string, buildingName:string, roomData:any, userId:string){
+  createDefaultChatRoom(buildingId:string, buildingName:string, roomData:any, adminId:string){
     // creates building chats db ref and default chat room
     let ref = this.db.collection('chats')
     .doc(buildingId)
@@ -216,7 +230,7 @@ export class SetDataService {
         .update({
           roomId: roomId
         }).then(()=>{
-          this.setChatRoomInfoInUser(userId, roomId, roomData.roomName, roomData.roomDescription);
+          this.setChatRoomInfoInUser(adminId, roomId, roomData.roomName, roomData.roomDescription);
         })
       })
     })
