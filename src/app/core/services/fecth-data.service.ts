@@ -142,6 +142,4 @@ export class FecthDataService {
   // END OF BOARD SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
-
-
 }

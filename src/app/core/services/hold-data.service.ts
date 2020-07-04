@@ -15,6 +15,7 @@ export class HoldDataService {
 
 
   convertJSDateIntoFirestoreTimestamp(){
+    // translate js date into firestore date to be push
     const time = firebase.firestore.FieldValue.serverTimestamp();
     return time;    
   }

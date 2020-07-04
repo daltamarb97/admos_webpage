@@ -7,11 +7,12 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { DemoMaterialModule } from '../demo-material-module';
 import { LoginComponent } from './login/login.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { PassResetComponent } from './pass-reset/pass-reset.component';
 
 
 
 @NgModule({
-  declarations: [SignUpComponent, LoginComponent],
+  declarations: [SignUpComponent, LoginComponent, PassResetComponent],
   imports: [
     CommonModule,
     AuthRoutingModule,

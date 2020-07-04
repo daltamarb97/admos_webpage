@@ -1,5 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import {  MatDialogRef, 
+          MAT_DIALOG_DATA, 
+          MatSnackBar, 
+          MatSnackBarHorizontalPosition, 
+          MatSnackBarVerticalPosition 
+} from '@angular/material';
 
 
 @Component({
@@ -11,11 +16,15 @@ export class ProfileDialogComponent{
 
   action: string;
   local_data:any;
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   constructor(
     public dialogRef: MatDialogRef<ProfileDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private _snackBar: MatSnackBar
   ) { 
+    // local_data receives data from the component in which this dialog was called
     this.local_data = {... data};
     this.action = this.local_data.action
   }
@@ -27,7 +36,15 @@ export class ProfileDialogComponent{
   }
 
   createDoormanAccount(){
-    this.dialogRef.close({data: this.local_data, event: this.action});
+    if(!this.local_data.email || !this.local_data.password){
+      this._snackBar.open('Te falta información para crear la cuenta', 'Cerrar', {
+        duration: 1500,
+        horizontalPosition: this.horizontalPosition,
+        verticalPosition: this.verticalPosition,
+      });
+    }else{
+      this.dialogRef.close({data: this.local_data, event: this.action});
+    }
   }
 
   copyMessage(){

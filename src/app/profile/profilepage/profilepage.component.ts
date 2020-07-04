@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, 
+        MatSnackBarHorizontalPosition, 
+        MatSnackBarVerticalPosition, 
+        MatSnackBar
+      } from '@angular/material';
 
 import { ProfileDialogComponent } from '../../material-component/profile-dialog/profile-dialog.component';
 
 import { SetDataService } from '../../core/services/set-data.service';
 import { HoldDataService } from '../../core/services/hold-data.service';
 import { FecthDataService } from '../../core/services/fecth-data.service';
+import { AuthService } from '../../core/services/auth.service';
+import { DeleteDataService } from '../../core/services/delete-data.service';
 
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { DocumentData } from '@angular/fire/firestore/interfaces';
+
 
 
 @Component({
@@ -21,27 +27,28 @@ export class ProfilepageComponent implements OnInit {
 
   destroy$: Subject<void> = new Subject()
   doormanList:Array<any> = []; 
-  buildingPassword:string = 'fcghijohghvbjnk'; // traser de firebase
-  paymentLink:string = 'esrdtfghjkll'; // traer de firebase
+  buildingPassword:string;
+  paymentLink:string;
   showAddDoormanButton:boolean = true;
+  // snackbar variables
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   constructor(
     private dialog: MatDialog,
+    private _snackBar: MatSnackBar,
     // services
     private setData: SetDataService,
     private holdData: HoldDataService,
-    private fetchData: FecthDataService
+    private fetchData: FecthDataService,
+    private deleteData: DeleteDataService,
+    private authData: AuthService
   ) { }
 
-  ngOnInit(): void {
-    console.log(this.holdData.buildingInfo, this.holdData.userId, this.holdData.userInfo);
-    
-    if(this.holdData.buildingInfo){
-      this.getDoormanInfo();
-    }else{
-      setTimeout(() => {
-        this.getDoormanInfo();
-      }, 1000);
-    }
+
+  ngOnInit(): void {    
+    this.getDoormanInfo();
+    this.paymentLink = this.holdData.buildingInfo.paymentLink;
+    this.buildingPassword = this.holdData.buildingInfo.buildingPassword;
   }
 
 
@@ -74,8 +81,11 @@ export class ProfilepageComponent implements OnInit {
     
   }
 
-  testClick(test){
-    console.log(test);
+  deleteDoormanAccount(data){
+    // disable doorman account
+    this.deleteData.disableDoormanAccountFromDB(this.holdData.buildingInfo.buildingId, data.doormanId);
+    this.doormanList.pop();
+    this.showAddDoormanButton = true;
   }
 
 
@@ -104,10 +114,37 @@ export class ProfilepageComponent implements OnInit {
     
     dialogRef.afterClosed().subscribe(result => {
       if(result.event === data.action){
-        // create doorman account
-        this.createDoormanAccount(result.data);
-      }else{
-        // do nothing
+        const dataResult = result.data; 
+        // check if doorman account already exists
+        this.authData.checkIfDoormanEmailExists(result.data.email)
+        .then(res => {
+          if(res.length > 0){
+            // email alredy exists
+            this._snackBar.open('El correo que registraste ya existe', 'Cerrar', {
+              duration: 2000,
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition,
+            });
+          }else{
+            // create doorman account
+            this.createDoormanAccount(result.data);
+            this._snackBar.open('Correo registrado exitosamente', 'Cerrar', {
+              duration: 2000,
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition,
+            });
+          }
+        })
+        .catch(err => {
+          // email is badly formatted, invalid for firebase
+          if(err.code === 'auth/invalid-email'){
+            this._snackBar.open('El correo que pusiste parece no existir, volver a registrar', 'Cerrar', {
+              duration: 2000,
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition,
+            });
+          }
+        })
       }
     })
   }
@@ -125,9 +162,10 @@ export class ProfilepageComponent implements OnInit {
   
   private createDoormanAccount(data){
     // call firebase function of doorman account creation
-    const doormanData = {
+    const doormanData: object = {
       email: data.email,
-      password: data.password
+      password: data.password,
+      name: `Portería ${this.holdData.buildingInfo.name}`,
     }
     this.setData.doormanCreationTrigger(this.holdData.buildingInfo.buildingId, doormanData);
   }

@@ -5,14 +5,13 @@ import { Router } from '@angular/router';
 import { FecthDataService } from '../core/services/fecth-data.service';
 import { SetDataService } from '../core/services/set-data.service';
 
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import * as XLSX from 'xlsx';
 
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
-import { AuthService } from '../core/services/auth.service';
 import { HoldDataService } from '../core/services/hold-data.service';
 
 

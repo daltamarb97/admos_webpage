@@ -1,16 +1,19 @@
-import * as functions from 'firebase-functions'
-import * as admin from 'firebase-admin';
+// UNCOMMENT AND DEPLOY WHEN LAUNCHING PRODUCTION
+
+// import * as functions from 'firebase-functions'
+// import * as admin from 'firebase-admin';
 
 // import * as nodemailer from 'nodemailer'
 
 
-admin.initializeApp(functions.config().firebase);
+// admin.initializeApp(functions.config().firebase);
 
 
 // const SENDER_EMAIL= 'waypooltec@gmail.com';
 // const SENDER_PASSWORD= 'Waypooltec2020';
 
 
+// // function that sends reminder email in response of an event triggered by admin
 // exports.sendPaymentEmailNotification = functions.firestore
 //     .document('payment_tables/{buildingId}/rows_data/{rowId}')
 //     .onUpdate((change, context)=>{
@@ -58,7 +61,7 @@ admin.initializeApp(functions.config().firebase);
 
 
     
-// function that updates pending_to_pay amount every month 
+// // function that updates pending_to_pay amount every month 
 // exports.pendingToPayUpdate = functions.pubsub.schedule('0 0 1 * *')
 //     .onRun((context)=>{
 //         // get Ids of every building in DB
@@ -78,7 +81,7 @@ admin.initializeApp(functions.config().firebase);
 
 //         // declaration of function
 //         function getRowsDataArray(buildingId:string){
-//             // functtion that get old data and updated with the new one
+//             // function that get old data and updated with the new one
 //             const refi = admin.firestore()
 //             .collection('payment_tables')
 //             .doc(buildingId)
@@ -107,39 +110,31 @@ admin.initializeApp(functions.config().firebase);
 //                 console.log('algo ocurrio con lista de rows: ' + err); 
 //             })
 //         }
-//     })
+// })
 
 
 
 
-// function that creates doorman account
-exports.createDoormanAccount = functions.firestore
-.document('buildings/{buildingId}/employees/{doormanId}')
-.onCreate((snap, context) => {
-    const user = snap.data();
-    const doormanId = context.params.doormanId;
+// // function that creates doorman account
+// exports.createDoormanAccount = functions.firestore
+// .document('buildings/{buildingId}/employees/{doormanId}')
+// .onCreate((snap, context) => {
+//     const user = snap.data();
+//     const doormanId = context.params.doormanId;
 
-    if(user != undefined){
-        // create user in firebase auth
-        admin.auth().createUser({
-            email: user.email,
-            emailVerified: true,
-            password: user.password,
-            disabled: false
-        })
-        .then(() => {
-            // create doorman user in users node
-            admin.firestore().collection('users').doc(doormanId)
-            .update({
-                name: user.name,
-                email: user.email,
-                isDoorman: true,
-                buildingId: user.buildingId,
-                userId: doormanId
-            })
-            .then(()=>console.log('doorman created in users node'))
-            .catch(err => console.log(err))
-        }).catch(err => console.log(err))
-    }
+//     if(user != undefined){
+//         // create user in firebase auth
+//         admin.auth().createUser({
+//             uid: doormanId,
+//             email: user.email,
+//             emailVerified: true,
+//             password: user.password,
+//             disabled: false
+//         })
+//         .then(()=>console.log('user created in auth'))
+//         .catch(err => console.log(err))
+//     }
     
-})
+// })
+
+
