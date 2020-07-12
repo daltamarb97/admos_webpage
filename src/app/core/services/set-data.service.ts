@@ -334,7 +334,20 @@ export class SetDataService {
       userId: messageData.userId
     })
   }
+  sendPrivateChatMessage(chatId, messageData){
+    // send privatechat message to firestore
+    let ref = this.db.collection('privatechats')
+    .doc(chatId)
+    .collection('messages')
 
+    return ref.add({
+      name: messageData.name,
+      lastname: messageData.lastname,
+      msg: messageData.msg,
+      timestamp: messageData.timestamp,
+      userId: messageData.userId
+    })
+  }
   // END OF CHATS AND COMUNICATIONS SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*

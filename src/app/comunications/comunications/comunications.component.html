@@ -1,31 +1,43 @@
 <mat-sidenav-container class="chat-sidebar-container">
     <!-- left side menu -->
     <mat-sidenav opened mode="side">
-        <div>
+        <mat-toolbar class=".mat-toolbar  mat-primary mat-toolbar-single-row" style="height: 8%; background-color: #2C3B4D !important;" > 
+             <span class="toolbar-msg" >Chats Grupales</span>
+        </mat-toolbar>
+        <mat-list >
+            <mat-list-item *ngFor="let room of chatRooms" [class.highlighted]="currentRoomData.id === room.roomId" 
+            (click)="getMessagesFromRoom(room)" > {{room.roomName}} </mat-list-item>
+
+        </mat-list>
+        <mat-toolbar  class=".mat-toolbar  mat-primary mat-toolbar-single-row" style="height: 8%; background-color: #2C3B4D !important;"> 
+            <span class="toolbar-msg">Mensajes Directos</span>
+       </mat-toolbar>
+        <!-- <div>
             <h6>Salas de Chat</h6>
             <div *ngFor="let room of chatRooms">
                 <mat-card>
-                    <mat-card-header  [class.highlighted]="currentRoomData.id === room.roomId" (click)="getMessagesFromRoom(room)">
+                    <mat-card-header >
                         <mat-card-title>{{room.roomName}}</mat-card-title>
                     </mat-card-header>
                 </mat-card>
             </div>
   
-        </div>
-        
-        <div>
-            <h6>Mensajes Directos</h6>
-            <mat-card>Simple card</mat-card>
-        </div>
+        </div> -->
+        <mat-list >
+            <mat-list-item *ngFor="let chat of privateChats" (click)="getMessagesFromPrivateChat(chat)">
+                 {{chat.name}} {{chat.lastname}}
+           </mat-list-item>
+      
+
+        </mat-list>
 
         <div>
-            <button mat-fab color="accent" (click)="addChatRoom()">
-                <mat-icon>add</mat-icon>
-            </button>
+            <button mat-raised-button (click)="addChatRoom()" color="primary" >Crear Grupo</button>
         </div>
     </mat-sidenav>
     <!-- right side menu -->
-    <mat-sidenav opened mode="side" position="end">
+
+    <mat-sidenav *ngIf="showDetail" opened mode="side" position="end">
         <h3><b>#{{currentRoomData.name}}</b></h3>
         <div>
             <mat-card>
@@ -48,13 +60,53 @@
 
         <button mat-raised-button color="warn" (click)="deleteChatRoom()">Eliminar #{{currentRoomData.name}}</button>
        
-    </mat-sidenav>
+    </mat-sidenav> 
     <!-- chat messages layout -->
-    <div *ngIf="chatMessages.length > 0">
-        <mat-card class="message-card" *ngFor="let message of chatMessages">
+    <!-- <mat-toolbar class="mat-toolbar mat-primary mat-toolbar-single-row" color="$themecolor-alt" style="height: 7.2%;
+    position: fixed;z-index: 3; display: flex;">
+
+        <span class="toolbar-msg" ># {{currentRoomData.name}} </span>
+        <span class="example-spacer"></span>
+
+        <button  mat-raised-button color="primary" class="example-icon" >Ver Miembros</button>
+
+   </mat-toolbar> -->
+   <mat-toolbar  class="background-room" style="height: 8%; background-color: #2C3B4D !important;
+   ">
+   
+    <span class="toolbar-msg"  ># {{currentRoomData.name}}</span>
+    <span class="example-spacer"></span>
+    <button  mat-raised-button color="primary" class="example-icon" (click)="showDetails()">Detalles</button>
+
+    <button mat-icon-button class="example-icon"  aria-label="Example icon-button with share icon">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </mat-toolbar>
+    <div class="chat"  *ngFor="let message of chatMessages" >
+        <!-- <img class="user-img" [src]="msg.userAvatar" alt="" src=""> -->
+        <!-- <ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner> -->
+          <div class="me"  *ngIf="userId == message.userId">          
+              <span style="word-wrap: break-word;">{{message.msg}} </span>
+              
+              <p class="time-left">{{message.timestamp.toDate() | date: 'hh:mm'}}</p> 
+          </div>
+          <div class="otherMessage"   *ngIf="userId !== message.userId">
+            <span class="name"  >
+                {{message.name}} {{message.lastname}}<p class="time-right" style="margin-left:10px;">{{message.timestamp.toDate() | date: 'hh:mm'}}</p> 
+
+            </span> <br>
+            <span style="word-wrap: break-word;">{{message.msg}}</span>
+                
+
+           
+          </div>
+        </div>
+  
+    <!-- <div *ngIf="chatMessages.length > 0">
+        <mat-card class="message-card" >
             <mat-card-header>
                 <div mat-card-avatar></div>
-                <mat-card-title>{{message.name}} {{message.lastname}}</mat-card-title>
+                <mat-card-title></mat-card-title>
                 <mat-card-subtitle>{{message.timestamp}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
@@ -63,7 +115,7 @@
                 </p>
             </mat-card-content>
         </mat-card>
-    </div>
+    </div> -->
 
     <div *ngIf="chatMessages.length === 0">
         <mat-card class="message-card">
@@ -75,17 +127,35 @@
         </mat-card>
     </div>
     <!-- end of chat messages layout -->
-
-    <mat-card class="message-card">
+    <footer>
+        <mat-form-field style="background-color: white; border-top: gray;">
+            <div style="display: flex;">
+                <textarea matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="9"
+                [(ngModel)]="currentMessage" placeholder="Envía un mensaje"></textarea>
+                
+                <div class="example-button-container">
+                  <button mat-mini-fab >
+                      <mat-icon (click)="sendMessage()">send</mat-icon>
+                  </button>
+                </div>
+            </div>
+         
+    
+          </mat-form-field>
+    </footer>
+   
+<!-- 
         <mat-card-content>
             <mat-form-field>
                 <input matInput type="text" [(ngModel)]="currentMessage">
+                <mat-icon (click)="sendMessage()">send</mat-icon>
+
             </mat-form-field>
         
-            <mat-button-toggle (click)="sendMessage()">
-                <mat-icon>send</mat-icon>
-            </mat-button-toggle>
-        
-        </mat-card-content>
-    </mat-card>
+          
+        </mat-card-content> --> 
 </mat-sidenav-container>

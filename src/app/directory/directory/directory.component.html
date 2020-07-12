@@ -1,0 +1,72 @@
+
+
+<mat-card>
+    <div class="p-20 bg-info position-relative">
+        <h4 class="card-title text-white m-0">Directorio</h4>
+        <h6 class="card-subtitle text-white m-0 op-5">Estos son los contactos de los propietarios del edificio</h6>
+    </div>
+    <div class="message-box contact-box p-20">
+        <div *ngIf="data" class="message-widget contact-widget">
+            <!-- Message -->
+            Administrador
+            <a >
+                <div class="user-img"><img src="../assets/images/users/2.jpg" alt="user"
+                    class="img-circle"> <span class="profile-status online pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>{{user.name}} {{user.lastname}}</h5> 
+                    <span class="mail-desc">Celular: {{user.phone}} </span>
+                </div>
+                
+                 
+            </a>
+            Residentes
+            <a  *ngFor="let person of residents">
+                <div class="user-img"> <img src="../assets/images/users/2.jpg" alt="user"
+                        class="img-circle"> <span class="profile-status busy pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>{{person.name}} {{person.lastname}} <span class="mail-desc">{{person.email}}</span></h5> 
+                    <span class="mail-desc">{{person.phone}}</span>
+
+                </div> 
+                <div class="example-button-container">
+                    <button (click)="chat(person)" mat-mini-fab  aria-label="Example icon button with a home icon">
+                      <mat-icon>chat</mat-icon>
+                    </button>
+                  </div>
+            </a>
+            <!-- Message -->
+            <a href="#">
+                <div class="user-img"> <span class="round">A</span> <span
+                        class="profile-status away pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>Arijit Sinh</h5> <span class="mail-desc">cruise1298.fiplip@gmail.com</span>
+                </div>
+            </a>
+            <!-- Message -->
+            <a href="#">
+                <div class="user-img"> <img src="../assets/images/users/4.jpg" alt="user"
+                        class="img-circle"> <span class="profile-status offline pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>Pavan kumar</h5> <span class="mail-desc">kat@gmail.com</span>
+                </div>
+            </a>
+            <!-- Message -->
+            <a href="#">
+                <div class="user-img"> <img src="../assets/images/users/5.jpg" alt="user"
+                        class="img-circle"> <span class="profile-status offline pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>Andrew</h5> <span class="mail-desc">and@gmail.com</span>
+                </div>
+            </a>
+            <!-- Message -->
+            <a href="#">
+                <div class="user-img"> <img src="../assets/images/users/6.jpg" alt="user"
+                        class="img-circle"> <span class="profile-status offline pull-right"></span> </div>
+                <div class="mail-contnet">
+                    <h5>Jonathan Jones</h5> <span class="mail-desc">jj@gmail.com</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</mat-card>
+

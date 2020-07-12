@@ -13,6 +13,7 @@ import * as XLSX from 'xlsx';
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
 import { HoldDataService } from '../core/services/hold-data.service';
+import { ExcelDialogComponent } from 'app/material-component/excel-dialog/excel-dialog.component';
 
 
 
@@ -152,6 +153,37 @@ export class DashboardComponent implements OnInit {
           this.updatePendingToPay(data, paymentData);
         }
       })
+    }
+    openDialogForExcel(action, obj){
+      obj.action = action;
+      const dialogRef = this.dialog.open(ExcelDialogComponent,{
+        data: obj
+      });
+
+      // dialogRef.afterClosed().subscribe(result =>{
+      //   if(result.event === 'Cancel'){
+      //     // do nothing
+      //   }else if(result.event === 'Update'){
+      //     this.updateRowData(result.data);
+      //   }else if(result.event === 'Delete'){
+      //     this.deleteRowData(result.data);
+      //   }else if(result.event === 'Add'){
+      //     this.setRowData(result.data);
+      //   }else if(result.event === 'Payment'){ 
+      //     const data = {
+      //       pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
+      //       rowId: result.data.rowId,
+      //     };
+
+      //     const paymentData = {
+      //       paid_amount: result.data.payment,
+      //       timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+      //       author: 'admin'
+      //     };
+
+      //     this.updatePendingToPay(data, paymentData);
+      //   }
+      // })
     }
 
 

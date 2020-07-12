@@ -10,10 +10,11 @@ Main sidebar
 ******************/
 
 mat-sidenav {
-  width: 240px;
+  width: 200px;
   padding-top: 0px;
 }
 #snav{
+    background-color: $themecolor;
     box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
     .mat-list-item {
         height: auto;
@@ -25,7 +26,7 @@ mat-sidenav {
             display: block;
             padding: 0px 15px;
             &:hover{
-                background: none;
+                background: $themecolor-alt;
                 > a{
                   color:$themecolor;
                 }

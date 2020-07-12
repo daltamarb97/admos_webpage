@@ -99,7 +99,14 @@ export class FecthDataService {
 
     return ref.stateChanges(['added', 'removed']);
   }
+  getPrivateChats(userId){
+    // getting chatrooms info
+    let ref = this.db.collection('users')
+    .doc(userId)
+    .collection('keyChats')
 
+    return ref.stateChanges(['added', 'removed']);
+  }
 
   getMessagesFromSpecificRoom(buildingId, roomId){
     // get messages from specific room
@@ -111,7 +118,14 @@ export class FecthDataService {
 
     return ref.stateChanges(['added']);
   }
+  getSpecificChat(chatId){
+    // get messages from specific room
+    let ref = this.db.collection('privatechat')
+    .doc(chatId)
+    .collection('messages')
 
+    return ref.stateChanges(['added']);
+  }
 
   getParticipantsFromSpecificRoom(buildingId, roomId){
     // get messages from specific room
@@ -142,4 +156,17 @@ export class FecthDataService {
   // END OF BOARD SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+   // DIRECTORY SERVICES
+ 
+   getPrivateChatKey(userId,receiverId){
+    return this.db.collection('users')
+    .doc(userId)
+    .collection('keyChats').doc(receiverId).valueChanges();
+  }
+  getResidentsDirectory(buildingId){
+    return this.db.collection('buildings').doc(buildingId).collection('residents').valueChanges(); 
+ }
+   // END OF DIRECTORY SERVICES
+
 }
