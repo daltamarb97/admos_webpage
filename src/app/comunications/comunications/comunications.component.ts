@@ -34,7 +34,7 @@ export class ComunicationsComponent implements OnInit {
   userId:string;
   activeBuilding:string;
   chatRooms:Array<any> = [];  // list of names of rooms
-  privateChats:Array<any> = [];  // list of names of rooms
+  privateChats:Array<any> = [];  // list of names of private chats
   privateChatsNames:any = [];
   currentPrivateChat:any;
   chatMessages: Array<any> = []; // array of messages of specific room
@@ -46,6 +46,8 @@ export class ComunicationsComponent implements OnInit {
   showDetail:boolean = false;
   person;
   receiver;
+  showPrivateChats:boolean=false;
+  showRoomChats:boolean=false;
   constructor(
     private fetchData: FecthDataService,
     private setData: SetDataService,
@@ -109,6 +111,7 @@ export class ComunicationsComponent implements OnInit {
         if(a.type === 'added'){
           const data= a.payload.doc.data(); 
           this.chatRooms.push(data);
+          
         }else if( a.type === 'removed'){
           for(let i in this.chatRooms){
             if(this.chatRooms[i].roomId === this.currentRoomData.id){
@@ -120,6 +123,8 @@ export class ComunicationsComponent implements OnInit {
       });
       // getting messages of default room on init
       this.getMessagesFromRoom(this.chatRooms[0]);
+      this.showRoomChats=true;
+      this.showPrivateChats=false;
     })
   }
 
@@ -129,8 +134,11 @@ export class ComunicationsComponent implements OnInit {
       id: data.roomId,
       description: data.roomDescription,
     }
+    this.showRoomChats=true;
+    this.showPrivateChats=false;
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
+    
     this.fetchData.getMessagesFromSpecificRoom(
       this.activeBuilding, 
       data.roomId
@@ -261,6 +269,8 @@ PRIVATE CHAT
       id: data.chatId,
       lastname: data.lastname,
     }
+    this.showRoomChats=false;
+    this.showPrivateChats=true;
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
     this.fetchData.getSpecificChat(

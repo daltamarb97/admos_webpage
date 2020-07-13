@@ -31,6 +31,8 @@ export class BoardComponent implements OnInit {
   announcementList: Array<any> = []; // array of announcements used in the html
   backColor:string; // color of header background
   listOfBacgroundColors: Array<string> = ['#ADD8E6', '#F5B6C1', '#DDBDF1', '#90EE90'];
+  body:string;
+  title:string;
   constructor(
     public dialog: MatDialog,
     // services
@@ -75,26 +77,19 @@ export class BoardComponent implements OnInit {
   }
 
 
-  creationAnnouncement(){
-    // create a new announcement
-    const data = {
-      action: 'create'
-    };
-    const dialogRef = this.dialog.open(BoardDialogComponent,{
-      data: data
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      const event = result.event;
-      if(event === 'create'){
+  createAnnouncement(){
+    console.log(this.title);
+    console.log(this.body);
+    
+    
         const resultData = {
-          title: result.data.title,
-          body: result.data.body,
+          title: this.title,
+          body: this.body,
           timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp()
         };
-        this.createAnnouncement(resultData);
-      }
-    })
+      
+     // creation of new announcement
+     this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, resultData);
   }
 
 
@@ -133,9 +128,6 @@ export class BoardComponent implements OnInit {
   }
 
 
-  private createAnnouncement(data){
-    // creation of new announcement
-    this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, data);
-  }
+
 
 }
