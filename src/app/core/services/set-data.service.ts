@@ -17,15 +17,26 @@ export class SetDataService {
 
   setTableData(buildingId, data){
     // set data to a specific payment table using Excel
-    let ref = this.db.collection('payment_tables/')
+    let ref = this.db.collection('payment_tables')
     .doc(buildingId)
-    .collection('rows_data')
-
-    return ref.add(data).then((docRef)=>{
-        ref.doc(docRef.id).update({
+    
+    return ref.collection('rows_data')
+    .add(data)
+    .then((docRef)=>{
+        ref.collection('rows_data')
+        .doc(docRef.id)
+        .update({
           rowId: docRef.id,
           manualEmail: false,
           pending_to_pay: data.amount_to_pay
+        }).then(() => {
+          // create reference of legalIds of people on subcollection id_facility
+          ref.collection('id_facility')
+          .doc(docRef.id)
+          .set({
+            facility: data.facility_number,
+            id: data.legal_id
+          })
         })
     })
   }
@@ -126,6 +137,14 @@ export class SetDataService {
           }, 
           adminId
         );
+      }).then(() => {
+        // creates building reference in buildingNames for residenst registration
+        ref.doc('buildingNames')
+        .collection('names')
+        .add({
+          buildingId: buildingId,
+          name: buildingData.name
+        })
       })
     })
   }
