@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FecthDataService {
 
-  constructor(private db: AngularFirestore) {
+  constructor(
+    private db: AngularFirestore,
+  ) {
     
    }
 
@@ -81,6 +84,13 @@ export class FecthDataService {
     .collection('record_of_payments')
 
     return ref.valueChanges();
+  }
+
+  async getPaymentProofImage(data){
+    // get payment proof image form storage firebase
+    let ref = firebase.storage().ref(`paymentRecords/${data.buildingId}`).child(`${data.rowId}`);
+    const url = await ref.getDownloadURL();
+    return url;
   }
 
   // END OF PAYMENT TABLE SERVICES

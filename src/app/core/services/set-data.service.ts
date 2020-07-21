@@ -35,7 +35,8 @@ export class SetDataService {
           .doc(docRef.id)
           .set({
             facility: data.facility_number,
-            id: data.legal_id
+            id: data.legal_id,
+            rowId: docRef.id
           })
         })
     })

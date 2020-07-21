@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
       private holdData: HoldDataService,
       // UI components
       public dialog: MatDialog,
-      private router: Router
+      private router: Router,
     ){ 
       this.getColumnNames();
     }
@@ -85,9 +85,18 @@ export class DashboardComponent implements OnInit {
         takeUntil(this.destroy$)
       ).subscribe(data => {  
         console.log('me active');
+        this.dataSource.data = data;
+      });     
+    }
 
-        this.dataSource.data = data
-      })
+    styleRow(row){
+      if (row.pullRequest) {
+        return {'background-color': '#F6F3A5'};
+      }else if (row.pending_to_pay > row.amount_to_pay) {
+        return {'background-color': '#F2D0D0'};
+      }else{
+        return {'background-color': 'white'};
+      }
     }
 
 

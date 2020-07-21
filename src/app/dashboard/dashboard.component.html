@@ -76,7 +76,7 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-        [ngStyle]="{'background-color':row.pending_to_pay > row.amount_to_pay ? '#F2D0D0' : 'white' }">
+        [ngStyle]="styleRow(row)">
     </tr>
     
 </table>

@@ -68,6 +68,7 @@ export class ComunicationsComponent implements OnInit {
         if(a.type === 'added'){
           const data= a.payload.doc.data(); 
           this.chatRooms.push(data);
+          
         }else if( a.type === 'removed'){
           for(let i in this.chatRooms){
             if(this.chatRooms[i].roomId === this.currentRoomData.id){
@@ -78,7 +79,7 @@ export class ComunicationsComponent implements OnInit {
         }
       });
       // getting messages of default room on init
-      this.getMessagesFromRoom(this.chatRooms[0]);
+      this.getMessagesFromRoom(this.chatRooms[0]);     
     })
   }
 
