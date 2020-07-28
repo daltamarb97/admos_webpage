@@ -6,7 +6,7 @@ import { HoldDataService } from '../../core/services/hold-data.service';
 import { FecthDataService } from '../../core/services/fecth-data.service';
 import { DeleteDataService } from '../../core/services/delete-data.service';
 
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 
