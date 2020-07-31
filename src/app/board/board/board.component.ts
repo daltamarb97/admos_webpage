@@ -55,7 +55,7 @@ export class BoardComponent implements OnInit {
   private getAnnouncements(){
     // get announcements of building
     this.announcementList = [];
-    this.fetchData.getBoardAnnouncements(this.holdData.userInfo.activeBuilding)
+    this.fetchData.getBoardAnnouncements(this.holdData.userInfo.buildingId)
     .pipe(
       takeUntil(this.destroy$)
     )
@@ -123,19 +123,19 @@ export class BoardComponent implements OnInit {
 
   private updateAnnouncement(item, data){
     // edition of announcement
-    this.setData.updateAnnouncement(this.holdData.userInfo.activeBuilding, item.announcementId, data);
+    this.setData.updateAnnouncement(this.holdData.userInfo.buildingId, item.announcementId, data);
   }
 
 
   private deleteAnnouncement(item){
     // elimination of announcement
-    this.deleteData.deleteAnnouncement(this.holdData.userInfo.activeBuilding, item.announcementId);
+    this.deleteData.deleteAnnouncement(this.holdData.userInfo.buildingId, item.announcementId);
   }
 
 
   private createAnnouncement(data){
     // creation of new announcement
-    this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, data);
+    this.setData.createAnnouncement(this.holdData.userInfo.buildingId, data);
   }
 
 }

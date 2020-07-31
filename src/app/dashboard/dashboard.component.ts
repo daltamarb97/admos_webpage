@@ -30,9 +30,7 @@ export class DashboardComponent implements OnInit {
     file:any;
     arrayBuffer:any;
     filelist = [];
-    showSpinner:boolean = false;
-    userId: string;
-    activeBuilding: string;
+    buildingId: string;
 
     constructor(
       // services
@@ -54,7 +52,7 @@ export class DashboardComponent implements OnInit {
 
 
     ngOnInit() {
-      this.activeBuilding = this.holdData.userInfo.activeBuilding;
+      this.buildingId = this.holdData.userInfo.buildingId;
       this.getInitialTableData();
     }
 
@@ -80,7 +78,7 @@ export class DashboardComponent implements OnInit {
     private getInitialTableData(){
       // get current table data on init
       this.fetchData.getTableData(
-        this.activeBuilding,
+        this.buildingId,
       ).pipe(
         takeUntil(this.destroy$)
       ).subscribe(data => {  
@@ -120,7 +118,7 @@ export class DashboardComponent implements OnInit {
           
           // set read data to firebase 
           for(let row of this.filelist){
-            this.setData.setTableData(this.activeBuilding, row)
+            this.setData.setTableData(this.buildingId, row)
             .then(()=>{
               console.log('data in firebase');
               
@@ -172,36 +170,115 @@ export class DashboardComponent implements OnInit {
 
     private updateRowData(data){
       // update firebase info for that specific row
-      this.setData.updateSingleRow(this.activeBuilding, data.rowId, data)
+      this.setData.updateSingleRow(this.buildingId, data.rowId, data)
     }
 
 
     private updatePendingToPay(data, paymentData){
       // update firebase info for that specific row
-      this.setData.updatePendingToPay(this.activeBuilding, data.rowId, data.pending_to_pay, paymentData)      
+      this.setData.updatePendingToPay(this.buildingId, data.rowId, data.pending_to_pay, paymentData)      
     }
 
 
     private deleteRowData(data){
       // delete data of specific row from firebase
-      this.deleteData.deleteSingleTableRow(this.activeBuilding, data.rowId)
+      this.deleteData.deleteSingleTableRow(this.buildingId, data.rowId)
     }
 
 
     private setRowData(data){
       // Set row data manually
-      this.setData.setTableData(this.activeBuilding, data)
+      this.setData.setTableData(this.buildingId, data)
     }
 
     
-    sendPaymentRemainderEmail(data){
-      // send automatic reminder email by event
-      this.showSpinner = true;
-      this.setData.setFirestoreTriggerPaymentEmail(this.activeBuilding, data.rowId);
-      setTimeout(() => {
-        this.showSpinner = false;
-        console.log('deberia desaparecer el spinner');
-      }, 3000); 
+    sendPaymentRemainderEmail(){
+      // send automatic reminder message
+      const dataSource = this.dataSource.data;
+      const userIdsToCompare = [];
+      dataSource.forEach(el => {
+        if (el.pending_to_pay > el.amount_to_pay) {
+          const dataToPush = {
+            userId: el.userId,
+            name:el.name,
+            lastname: el.lastname,
+          }
+          userIdsToCompare.push(dataToPush);
+        }
+      });  
+
+      // check if chat key already exists and send message
+      this.fetchData.getPrivateMessageKeys(this.holdData.userId)
+        .subscribe(data => {
+          const result = data.docs;
+          const ids = [];
+          result.forEach (el => {
+            const dataToPush = {
+              userId: el.id,
+              chatId: el.data().chatId
+            }
+            ids.push(dataToPush)
+          });
+           
+          userIdsToCompare.forEach(j => {
+            ids.forEach(user => {
+              if (user.userId === j.userId) {
+                const dataMessage = {
+                  chatId: user.chatId,
+                  messageData : {
+                    message: 'Te recordamos que tienes un saldo pendiente por pagar correspondiente a la cuota administrativa de tu conjunto residencial. Si tienes alguna duda acércate a la administración. (Este es un mensaje automático)',
+                    timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+                    userId: this.holdData.userId
+                  }
+                }
+                const index = userIdsToCompare.indexOf(j);
+                userIdsToCompare.splice(index, 1);
+                this.setData.sendPrivateMessage(dataMessage).then(()=>console.log('todo sucedio normal'))
+              }
+            })
+          })
+          
+          if (userIdsToCompare.length > 0) {
+            // send message to people admin didn't have a previous chat with
+            userIdsToCompare.forEach(i => {
+              const randomChatId = this.holdData.createRandomId();
+              const dataLocal = {
+                // set key in sender (me)
+                localUserId: this.holdData.userId,
+                foreignUserId: i.userId,
+                chatData: {
+                  chatId: randomChatId,
+                  name: i.name,
+                  lastname: i.lastname,
+                }
+              }
+              const dataForeign = {
+                // set key in receiver (other)
+                localUserId: i.userId,
+                foreignUserId: this.holdData.userId,
+                chatData: {
+                  chatId: randomChatId,
+                  name: this.holdData.userInfo.name,
+                  lastname: this.holdData.userInfo.lastname,
+                }
+              }
+              this.setData.setKeyOfPrivateChat(dataLocal);
+              this.setData.setKeyOfPrivateChat(dataForeign)
+                .then(() => {
+                  // send the actual message after key creation
+                  const dataMessage = {
+                    chatId: randomChatId,
+                    messageData : {
+                      message: 'Te recordamos que tienes un saldo pendiente por pagar correspondiente a la cuota administrativa de tu conjunto residencial. Si tienes alguna duda acércate a la administración. (Este es un mensaje automático)',
+                      timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+                      userId: this.holdData.userId
+                    }
+                  }
+                  this.setData.sendPrivateMessage(dataMessage).then(()=>console.log('todo sucedio normal'))
+                })
+            })
+          }
+        })
     }
 
 }

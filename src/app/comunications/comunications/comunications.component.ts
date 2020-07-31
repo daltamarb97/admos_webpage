@@ -28,7 +28,7 @@ export class ComunicationsComponent implements OnInit {
   destroy$: Subject<void> = new Subject();
 
   userId:string;
-  activeBuilding:string;
+  buildingId:string;
   chatRooms:Array<any> = [];  // list of names of rooms
   chatMessages: Array<any> = []; // array of messages of specific room
   currentMessage:string; // message to be send
@@ -49,7 +49,7 @@ export class ComunicationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.holdData.userId;
-    this.activeBuilding = this.holdData.userInfo.activeBuilding;
+    this.buildingId = this.holdData.userInfo.buildingId;
     this.getChatRoomNames();
   }
 
@@ -93,7 +93,7 @@ export class ComunicationsComponent implements OnInit {
     this.chatMessages = []; //clear the array on click
     // get messages from room in firestore
     this.fetchData.getMessagesFromSpecificRoom(
-      this.activeBuilding, 
+      this.buildingId, 
       data.roomId
     ).subscribe(messages => {  
       messages.map(m=>{
@@ -109,7 +109,7 @@ export class ComunicationsComponent implements OnInit {
     this.currentRoomParticipants = []; //clear the array on click
     // get participants of current room
     this.fetchData.getParticipantsFromSpecificRoom(
-      this.activeBuilding, 
+      this.buildingId, 
       this.currentRoomData.id
     ).subscribe(participants => {
       participants.map(p=>{
@@ -121,7 +121,7 @@ export class ComunicationsComponent implements OnInit {
 
 
   addChatRoom(){
-    const dialogRef = this.dialog.open(ChatCreationDialogComponent, {data: this.activeBuilding});
+    const dialogRef = this.dialog.open(ChatCreationDialogComponent, {data: this.buildingId});
 
     dialogRef.afterClosed()
     .subscribe(result =>{
@@ -134,7 +134,7 @@ export class ComunicationsComponent implements OnInit {
       const participants: Array<any> = result.data.participants;
 
       this.setData.createChatRoom(
-        this.activeBuilding, 
+        this.buildingId, 
         roomData, 
         this.userId,
         participants
@@ -153,7 +153,7 @@ export class ComunicationsComponent implements OnInit {
       userId: this.userId
     }
 
-    this.setData.sendChatMessage(this.activeBuilding, this.currentRoomData.id, messageData)
+    this.setData.sendChatMessage(this.buildingId, this.currentRoomData.id, messageData)
     .then(()=>{
       // put the chat input in blank
       this.currentMessage = '';
@@ -167,7 +167,7 @@ export class ComunicationsComponent implements OnInit {
     dialogRef.afterClosed()
     .subscribe(result => {
       if(result.data === 'delete'){
-        this.deleteData.deleteChatRoom(this.activeBuilding, this.currentRoomData.id, this.userId);
+        this.deleteData.deleteChatRoom(this.buildingId, this.currentRoomData.id, this.userId);
       }else{
         // do nothing
       }

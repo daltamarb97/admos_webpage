@@ -40,7 +40,7 @@ export class AppComponent {
 
   private getBuildingInfo(){
     // get building Info to be used
-    this.fetchData.getBuildingInfo(this.holdData.userInfo.activeBuilding)
+    this.fetchData.getBuildingInfo(this.holdData.userInfo.buildingId)
     .subscribe(building => {
       // assign buildinginfo value to global variable
       this.holdData.buildingInfo = building;  

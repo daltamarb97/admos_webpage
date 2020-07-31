@@ -90,7 +90,7 @@ export class UserTableProfileComponent implements OnInit {
   checkPicture(element){
     // check payment proof pic
     const data = {
-      buildingId: this.holdData.userInfo.activeBuilding,
+      buildingId: this.holdData.userInfo.buildingId,
       rowId: this.rowInfo.rowId
     }
     this.fetchData.getPaymentProofImage(data)
@@ -102,7 +102,7 @@ export class UserTableProfileComponent implements OnInit {
   approvePayment(element, approved){
     // approve or disapprove payment
     const data = {
-      buildingId: this.holdData.userInfo.activeBuilding,
+      buildingId: this.holdData.userInfo.buildingId,
       rowId: this.rowInfo.rowId,
       paymentId: element.paymentId,
       paid_amount: element.paid_amount,

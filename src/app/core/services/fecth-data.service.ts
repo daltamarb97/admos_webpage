@@ -99,8 +99,6 @@ export class FecthDataService {
 
   // CHATS AND COMUNICATIONS SERVICES
 
-
-
   getChatRooms(userId){
     // getting chatrooms info
     let ref = this.db.collection('users')
@@ -132,6 +130,14 @@ export class FecthDataService {
     .collection('participants')
 
     return ref.stateChanges(['added']);
+  }
+
+  getPrivateMessageKeys(userId:string){
+    let ref = this.db.collection('users')
+    .doc(userId)
+    .collection('keyChats')
+
+    return ref.get();
   }
 
   // END OF CHATS AND COMUNICATIONS SERVICES

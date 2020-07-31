@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -87,26 +87,24 @@ export class SetDataService {
   }
 
 
-  setFirestoreTriggerPaymentEmail(buildingId,rowId){
-    // set 'manualEmail' boolean to DB to trigger payment email sending
-    let ref = this.db.collection('payment_tables/')
-    .doc(buildingId)
-    .collection('rows_data')
-    .doc(rowId)
+  sendPrivateMessage(data){
+    // send private message of payment reminder 
+    let ref = this.db.collection('privatechat')
+    .doc(data.chatId)
+    .collection('messages')
 
-    ref.update({
-      manualEmail: true
-    }).then(()=>{
-      // setting property 'manualEmail' to false to be recall in the future, DO THIS IN CLOUD FUNCTION AND DELETE FROM HERE
-      setTimeout(() => {
-        // give time to cloud function to execute
-        ref.update({
-          manualEmail: false
-        }).then(()=>{
-          console.log('progress completed');
-        })
-      }, 3000);
-    })
+    return ref.add(data.messageData);
+  }
+
+
+  setKeyOfPrivateChat(data){
+    // set key of private chat in both sender and receiver
+    let ref = this.db.collection('users')
+    .doc(data.localUserId)
+    .collection('keyChats')
+    .doc(data.foreignUserId)
+
+    return ref.set(data.chatData);
   }
 
   // END OF PAYMENTS TABLE SERVICES

@@ -56,7 +56,7 @@
             {{element.amount_to_pay | currency}} 
         </td>
     </ng-container>
-
+<!-- 
     <ng-container matColumnDef="reminder_email">
         <th mat-header-cell *matHeaderCellDef style="text-align: center">Correo recordatorio de Pago</th>
         <td mat-cell *matCellDef="let element" style="text-align: center"> 
@@ -64,14 +64,14 @@
                 <mat-icon>email</mat-icon>
             </button>
         </td>
-    </ng-container>
+    </ng-container> -->
 
-    <ng-container matColumnDef="spinner">
+    <!-- <ng-container matColumnDef="spinner">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element" (click)="showUserRowProfile(element)"> 
             <mat-spinner diameter=50 color='primary' *ngIf='element.manualEmail ===true'></mat-spinner>
         </td>
-    </ng-container>
+    </ng-container> -->
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -90,6 +90,7 @@
 <button mat-fab color="primary" aria-label="Añadir Fila" (click)='openDialog("Add",{})'>
     <mat-icon>add</mat-icon>
 </button>
+<button (click)="sendPaymentRemainderEmail()">test</button>
 
 
 

@@ -116,7 +116,7 @@ export class ProfilepageComponent implements OnInit {
       if(result.event === data.action){
         const dataResult = result.data; 
         // check if doorman account already exists
-        this.authData.checkIfDoormanEmailExists(result.data.email)
+        this.authData.checkIfDoormanEmailExists(dataResult.email)
         .then(res => {
           if(res.length > 0){
             // email alredy exists
@@ -127,7 +127,7 @@ export class ProfilepageComponent implements OnInit {
             });
           }else{
             // create doorman account
-            this.createDoormanAccount(result.data);
+            this.createDoormanAccount(dataResult);
             this._snackBar.open('Correo registrado exitosamente', 'Cerrar', {
               duration: 2000,
               horizontalPosition: this.horizontalPosition,
