@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -39,7 +39,8 @@ export class BoardComponent implements OnInit {
     private fetchData: FecthDataService,
     private setData: SetDataService,
     private deleteData: DeleteDataService,
-    private holdData: HoldDataService
+    private holdData: HoldDataService,
+    private _snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
@@ -89,9 +90,13 @@ export class BoardComponent implements OnInit {
         };
       
      // creation of new announcement
-     this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, resultData);
-  }
+     this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, resultData)
+     .then(()=>{
+      // let snackBarRef = snackBar.open('Message archived');
 
+     })
+  }
+  
 
   viewAnnouncementBody(item, i){
     item.action = 'view';

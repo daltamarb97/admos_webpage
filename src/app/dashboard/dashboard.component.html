@@ -1,4 +1,25 @@
 
+<div style=" display:flex;align-items: center;" class="m-t-20 m-b-20">    
+<mat-card-title style="color:gray; margin-right: 20px;" >Tabla de Pagos</mat-card-title>
+<button mat-raised-button (click)="fileInput.click()" color="primary" class="b-title" style="margin-left: auto;">Subir Excel 
+     </button>
+    <button mat-raised-button (click)="fileInput.click()" color="primary" class="b-title" >Descargar Tabla  
+       </button>
+</div>
+<div class="m-t-20 m-b-20">
+    <button mat-raised-button color="primary" aria-label="Añadir Fila" (click) ='openDialog("Add",{})' 
+    class="b-title">
+        <span class="material-icons">
+       add_box
+       </span>Agregar Propiedad
+   </button>
+       <button mat-raised-button (click)="fileInput.click()" color="primary" >
+           <span class="material-icons">
+               add_alert
+               </span>Enviar Notificaciones  
+            </button>
+</div>
+
 <table  mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="action">
         <th  mat-header-cell *matHeaderCellDef style="text-align: center">Acciones</th>
@@ -87,11 +108,8 @@
 
 
 <input hidden #fileInput type="file" class="form-control" (change)="addfile($event)" placeholder="Upload file" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">        
-<button mat-raised-button (click)="fileInput.click()" color="primary" >Subir</button>
 
-<button mat-fab color="primary" aria-label="Añadir Fila" (click) ='openDialog("Add",{})'>
-    <mat-icon>add</mat-icon>
-</button>
+
 
 
 
