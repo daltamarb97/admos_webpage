@@ -347,7 +347,7 @@ export class SetDataService {
     return ref.add({
       name: messageData.name,
       lastname: messageData.lastname,
-      msg: messageData.msg,
+      message: messageData.message,
       timestamp: messageData.timestamp,
       userId: messageData.userId
     })

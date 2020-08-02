@@ -7,7 +7,6 @@ import { ComunicationsComponent } from './comunications/comunications.component'
 import { DemoMaterialModule } from '../demo-material-module';
 import { FormsModule } from '@angular/forms';
 
-
 @NgModule({
   declarations: [ComunicationsComponent],
   imports: [
@@ -15,7 +14,7 @@ import { FormsModule } from '@angular/forms';
     DemoMaterialModule,
     FlexLayoutModule,
     ComunicationsRoutingModule,
-    FormsModule
+    FormsModule,
   ]
 })
 export class ComunicationsModule { }

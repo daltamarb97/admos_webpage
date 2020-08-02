@@ -2,19 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { FecthDataService } from '../../core/services/fecth-data.service';
-import { AuthService } from '../../core/services/auth.service';
 import { SetDataService } from '../../core/services/set-data.service';
 import { DeleteDataService } from '../../core/services/delete-data.service';
 
 import { ChatCreationDialogComponent } from '../../material-component/chat-creation-dialog/chat-creation-dialog.component';
 
-import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { HoldDataService } from '../../core/services/hold-data.service';
+import { takeUntil } from 'rxjs/operators';
 
 export class currentRoomData {
   name:string;
-  id:string;
+  roomId:string;
   description:string;
 }
 
@@ -63,6 +62,9 @@ export class ComunicationsComponent implements OnInit {
    getChatRoomNames(){
     // get chat rooms names
     this.fetchData.getChatRooms(this.userId)
+    .pipe(
+      takeUntil(this.destroy$)
+    )
     .subscribe(data => {
       data.map(a=>{
         if(a.type === 'added'){
@@ -71,7 +73,7 @@ export class ComunicationsComponent implements OnInit {
           
         }else if( a.type === 'removed'){
           for(let i in this.chatRooms){
-            if(this.chatRooms[i].roomId === this.currentRoomData.id){
+            if(this.chatRooms[i].roomId === this.currentRoomData.roomId){
               const index = parseInt(i);
               this.chatRooms.splice(index, 1);
             }
@@ -79,29 +81,69 @@ export class ComunicationsComponent implements OnInit {
         }
       });
       // getting messages of default room on init
-      this.getMessagesFromRoom(this.chatRooms[0]);     
+      const currentDate = new Date();
+      this.getMessagesFromRoom(this.chatRooms[0], currentDate, 1);     
     })
   }
 
 
-  getMessagesFromRoom(data){
+  getMessagesFromRoom(data, timestamp, limit){
     this.currentRoomData = {
       name: data.roomName,
-      id: data.roomId,
+      roomId: data.roomId,
       description: data.roomDescription,
     }
     this.chatMessages = []; //clear the array on click
-    // get messages from room in firestore
-    this.fetchData.getMessagesFromSpecificRoom(
-      this.buildingId, 
-      data.roomId
-    ).subscribe(messages => {  
-      messages.map(m=>{
-        const message = m.payload.doc.data(); 
-        this.chatMessages.push(message)
-      })
-    })
+    this.getMessagesFirebase(data, timestamp, limit);
     this.getParticipantsFromRoom();
+  }
+
+
+  moreMessages(){
+    console.log(this.currentRoomData);
+    console.log(this.chatMessages[0]);
+    
+    const timestampToCompare = this.chatMessages[0].timestamp;
+    this.getMessagesFirebase(this.currentRoomData, timestampToCompare, 1)
+  }
+
+
+  private getMessagesFirebase(data, timestamp, limit) {
+     // get messages from room in firestore
+     this.fetchData.getMessagesFromSpecificRoom(
+      this.buildingId, 
+      data.roomId,
+      timestamp,
+      limit
+    )
+    .pipe(
+      takeUntil(this.destroy$)
+    )
+    .subscribe(res => {  
+      if (this.chatMessages.length !== 0) {
+        const holdMessages = [];
+        holdMessages.push(...this.chatMessages);
+        this.chatMessages = [];
+        res.map(msg => {
+          const response = msg.payload.doc.data();
+          const singleMessage = {
+            ...response,
+            timestamp: response.timestamp.toDate(),
+          }
+          this.chatMessages.unshift(singleMessage);
+        });
+        this.chatMessages.push(...holdMessages);
+      }else {
+        res.map(msg => {
+          const response = msg.payload.doc.data();
+          const singleMessage = {
+            ...response,
+            timestamp: response.timestamp.toDate(),
+          }
+          this.chatMessages.unshift(singleMessage);
+        });
+      } 
+    })
   }
 
 
@@ -110,8 +152,12 @@ export class ComunicationsComponent implements OnInit {
     // get participants of current room
     this.fetchData.getParticipantsFromSpecificRoom(
       this.buildingId, 
-      this.currentRoomData.id
-    ).subscribe(participants => {
+      this.currentRoomData.roomId
+    )
+    .pipe(
+      takeUntil(this.destroy$)
+    )
+    .subscribe(participants => {
       participants.map(p=>{
         const participant = p.payload.doc.data(); 
         this.currentRoomParticipants.push(participant)
@@ -145,15 +191,24 @@ export class ComunicationsComponent implements OnInit {
 
   sendMessage(){
     // send message in specific room
+    const timestamp = this.holdData.convertJSDateIntoFirestoreTimestamp();
     const messageData = {
       name: this.holdData.userInfo.name,
       lastname: this.holdData.userInfo.lastname,
-      msg: this.currentMessage,
-      timestamp: Date.now(),
+      message: this.currentMessage,
+      timestamp: timestamp,
       userId: this.userId
     }
 
-    this.setData.sendChatMessage(this.buildingId, this.currentRoomData.id, messageData)
+    const tempData = {
+      name: this.holdData.userInfo.name,
+      lastname: this.holdData.userInfo.lastname,
+      message: this.currentMessage,
+      timestamp: new Date,
+      userId: this.userId
+    }
+    this.chatMessages.push(tempData);
+    this.setData.sendChatMessage(this.buildingId, this.currentRoomData.roomId, messageData)
     .then(()=>{
       // put the chat input in blank
       this.currentMessage = '';
@@ -167,7 +222,7 @@ export class ComunicationsComponent implements OnInit {
     dialogRef.afterClosed()
     .subscribe(result => {
       if(result.data === 'delete'){
-        this.deleteData.deleteChatRoom(this.buildingId, this.currentRoomData.id, this.userId);
+        this.deleteData.deleteChatRoom(this.buildingId, this.currentRoomData.roomId, this.userId);
       }else{
         // do nothing
       }

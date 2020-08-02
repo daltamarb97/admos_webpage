@@ -109,13 +109,13 @@ export class FecthDataService {
   }
 
 
-  getMessagesFromSpecificRoom(buildingId, roomId){
+  getMessagesFromSpecificRoom(buildingId: string, roomId: string, timestamp, limit: number){
     // get messages from specific room
     let ref = this.db.collection('chats')
     .doc(buildingId)
     .collection('rooms')
     .doc(roomId)
-    .collection('messages')
+    .collection('messages', ref => ref.orderBy('timestamp', "desc").where("timestamp", "<", timestamp).limit(limit))
 
     return ref.stateChanges(['added']);
   }

@@ -26,16 +26,16 @@
     </mat-sidenav>
     <!-- right side menu -->
     <mat-sidenav opened mode="side" position="end">
-        <h3><b>#{{currentRoomData.name}}</b></h3>
+        <h3 *ngIf="currentRoomData"><b>#{{currentRoomData.name}}</b></h3>
         <div>
             <mat-card>
                 <mat-card-header>
                     <mat-card-title>Descripción</mat-card-title>
-                    <mat-card-subtitle>{{currentRoomData.description}}</mat-card-subtitle>
+                    <mat-card-subtitle *ngIf="currentRoomData">{{currentRoomData.description}}</mat-card-subtitle>
                 </mat-card-header>
             </mat-card>
         </div>
-        <h5>Participantes de <b>#{{currentRoomData.name}}</b></h5>
+        <h5 *ngIf="currentRoomData">Participantes de <b>#{{currentRoomData.name}}</b></h5>
         <div>
             <mat-card>
                 <mat-card-content *ngFor="let participant of currentRoomParticipants">
@@ -46,20 +46,21 @@
             </mat-card>
         </div>
 
-        <button mat-raised-button color="warn" (click)="deleteChatRoom()">Eliminar #{{currentRoomData.name}}</button>
+        <button mat-raised-button color="warn" (click)="deleteChatRoom()" *ngIf="currentRoomData">Eliminar #{{currentRoomData.name}}</button>
        
     </mat-sidenav>
     <!-- chat messages layout -->
+    <button mat-raised-button class="butoon-refresh" (click)="moreMessages()">Más Mensajes</button>
     <div *ngIf="chatMessages.length > 0">
         <mat-card class="message-card" *ngFor="let message of chatMessages">
             <mat-card-header>
                 <div mat-card-avatar></div>
                 <mat-card-title>{{message.name}} {{message.lastname}}</mat-card-title>
-                <mat-card-subtitle>{{message.timestamp}}</mat-card-subtitle>
+                <mat-card-subtitle>{{message.timestamp | date: 'hh:mm'}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <p>
-                {{message.msg}}
+                {{message.message}}
                 </p>
             </mat-card-content>
         </mat-card>
@@ -74,18 +75,21 @@
             </mat-card-content>
         </mat-card>
     </div>
+    
     <!-- end of chat messages layout -->
-
-    <mat-card class="message-card">
-        <mat-card-content>
-            <mat-form-field>
-                <input matInput type="text" [(ngModel)]="currentMessage">
-            </mat-form-field>
-        
-            <mat-button-toggle (click)="sendMessage()">
-                <mat-icon>send</mat-icon>
-            </mat-button-toggle>
-        
-        </mat-card-content>
-    </mat-card>
+    <footer class="footer-chat">
+        <mat-card class="message-card">
+            <mat-card-content>
+                <mat-form-field>
+                    <input matInput type="text" [(ngModel)]="currentMessage">
+                </mat-form-field>
+            
+                <mat-button-toggle (click)="sendMessage()">
+                    <mat-icon>send</mat-icon>
+                </mat-button-toggle>
+            
+            </mat-card-content>
+        </mat-card>
+    </footer>
 </mat-sidenav-container>
+
