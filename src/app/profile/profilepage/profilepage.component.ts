@@ -30,6 +30,8 @@ export class ProfilepageComponent implements OnInit {
   buildingPassword:string;
   paymentLink:string;
   showAddDoormanButton:boolean = true;
+  user:any; 
+  buildingInfo:any;
   // snackbar variables
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -47,6 +49,8 @@ export class ProfilepageComponent implements OnInit {
 
   ngOnInit(): void {    
     this.getDoormanInfo();
+    this.user = this.holdData.userInfo;
+    this.buildingInfo = this.holdData.buildingInfo;
     this.paymentLink = this.holdData.buildingInfo.paymentLink;
     this.buildingPassword = this.holdData.buildingInfo.buildingPassword;
   }

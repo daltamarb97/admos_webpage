@@ -8,9 +8,10 @@ export interface Menu {
 }
 
 const MENUITEMS = [
-  { state: 'tabla-pagos', name: 'Tabla de pagos', type: 'link', icon: 'av_timer' },
-  { state: 'canales-comunicacion', type: 'link', name: 'Comunicaciones', icon: 'crop_7_5' },
-  { state: 'pizarra', type: 'link', name: 'Pizarra', icon: 'crop_7_5' },
+  { state: 'tabla-pagos', name: 'Tabla de pagos', type: 'link', icon: 'payment' },
+  { state: 'canales-comunicacion', type: 'link', name: 'chats', icon: 'message' },
+  { state: 'pizarra', type: 'link', name: 'Pizarra', icon: 'message' },
+  { state: 'directorio', type: 'link', name: 'Directorio', icon: 'book' },
 
 ];
 

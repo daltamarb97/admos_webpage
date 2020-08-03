@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { BoardRoutingModule } from './board-routing.module';
 import { BoardComponent } from './board/board.component';
 import { DemoMaterialModule } from '../demo-material-module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { DemoMaterialModule } from '../demo-material-module';
     BoardRoutingModule,
     DemoMaterialModule,
     FlexLayoutModule,
+    FormsModule
   ]
 })
 export class BoardModule { }

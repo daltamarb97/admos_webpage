@@ -315,8 +315,35 @@ export class SetDataService {
         }).then(()=>{
           this.setChatRoomInfoInUser(userId, roomId, roomData.roomName, roomData.roomDescription);
         })
+      }) 
+  }
+
+
+  createPrivateChat(localData, foreignData) {
+    // first set keys in both sender and receiver
+    const chatId = this.db.createId(); // create random chatId
+    let ref = this.db.collection('users')
+    .doc(localData.userId)
+    .collection('keyChats')
+    .doc(foreignData.userId)
+
+    return ref.set({
+      chatId: chatId,
+      name: foreignData.name,
+      lastname: foreignData.lastname
+    })
+    .then(() => {
+      let refForeign = this.db.collection('users')
+      .doc(foreignData.userId)
+      .collection('keyChats')
+      .doc(localData.userId)
+
+      refForeign.set({
+        chatId: chatId,
+        name: localData.name,
+        lastname: localData.lastname
       })
-    
+    });
   }
 
 
@@ -353,6 +380,21 @@ export class SetDataService {
     })
   }
 
+
+  sendPrivateChatMessage(chatId:string, messageData){
+    // send privatechat message to firestore
+    let ref = this.db.collection('privatechat')
+    .doc(chatId)
+    .collection('messages')
+
+    return ref.add({
+      name: messageData.name,
+      lastname: messageData.lastname,
+      message: messageData.message,
+      timestamp: messageData.timestamp,
+      userId: messageData.userId
+    })
+  }
   // END OF CHATS AND COMUNICATIONS SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*

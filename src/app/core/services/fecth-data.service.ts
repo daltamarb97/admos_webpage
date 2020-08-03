@@ -108,6 +108,15 @@ export class FecthDataService {
     return ref.stateChanges(['added', 'removed']);
   }
 
+  
+  getPrivateChats(userId){
+    // getting chatrooms info
+    let ref = this.db.collection('users')
+    .doc(userId)
+    .collection('keyChats')
+
+    return ref.stateChanges(['added', 'removed']);
+  }
 
   getMessagesFromSpecificRoom(buildingId: string, roomId: string, timestamp, limit: number){
     // get messages from specific room
@@ -120,6 +129,15 @@ export class FecthDataService {
     return ref.stateChanges(['added']);
   }
 
+
+  getSpecificChat(chatId: string, timestamp, limit: number){
+    // get messages from specific room
+    let ref = this.db.collection('privatechat')
+    .doc(chatId)
+    .collection('messages', ref => ref.orderBy('timestamp', "desc").where("timestamp", "<", timestamp).limit(limit))
+
+    return ref.stateChanges(['added']);
+  }
 
   getParticipantsFromSpecificRoom(buildingId, roomId){
     // get messages from specific room
@@ -158,4 +176,26 @@ export class FecthDataService {
   // END OF BOARD SERVICES
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
+
+   // DIRECTORY SERVICES
+ 
+   getPrivateChatKey(userId,receiverId){
+    let ref = this.db.collection('users')
+    .doc(userId)
+    .collection('keyChats')
+    .doc(receiverId)
+
+    return  ref.get();
+  }
+
+
+    getDirectory(buildingId: string, type: string){
+      let ref =  this.db.collection('buildings')
+      .doc(buildingId)
+      .collection(type)
+      
+      return ref.stateChanges(['added']); 
+  }
+   // END OF DIRECTORY SERVICES
+
 }

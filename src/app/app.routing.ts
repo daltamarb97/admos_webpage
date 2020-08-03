@@ -49,6 +49,15 @@ export const AppRoutes: Routes = [
         ],
         loadChildren:
           () => import('./board/board.module').then(m => m.BoardModule)
+      }, 
+      {
+        path: 'directorio',
+        canActivate: [
+          CurrentUserGuard,
+          EmailVerifiedGuardService
+        ],
+        loadChildren:
+          () => import('./directory/directory.module').then(m => m.DirectoryModule)
       },
       {
         path: 'perfil',

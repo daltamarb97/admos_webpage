@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {MatTableDataSource, MatDialog} from '@angular/material';
+import {
+  MatTableDataSource, 
+  MatDialog, 
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+  MatSnackBar
+} from '@angular/material';
 import { Router } from '@angular/router';
 
 import { FecthDataService } from '../core/services/fecth-data.service';
@@ -13,11 +19,7 @@ import * as XLSX from 'xlsx';
 import { DialogOverviewComponent } from './../material-component/dialog/dialog.component'
 import { DeleteDataService } from '../core/services/delete-data.service';
 import { HoldDataService } from '../core/services/hold-data.service';
-
-
-
-
-
+import { ExcelDialogComponent } from '../material-component/excel-dialog/excel-dialog.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -31,7 +33,9 @@ export class DashboardComponent implements OnInit {
     arrayBuffer:any;
     filelist = [];
     buildingId: string;
-
+    // snackbar variables
+    horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+    verticalPosition: MatSnackBarVerticalPosition = 'bottom';
     constructor(
       // services
       private fetchData: FecthDataService,
@@ -42,6 +46,7 @@ export class DashboardComponent implements OnInit {
       // UI components
       public dialog: MatDialog,
       private router: Router,
+      private _snackBar: MatSnackBar,
     ){ 
       this.getColumnNames();
     }
@@ -98,36 +103,35 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    addfile(event){   
-      // Excel reader logic 
-      this.file= event.target.files[0];     
-      let fileReader = new FileReader();    
-      fileReader.readAsArrayBuffer(this.file);     
-      fileReader.onload = (e) => {    
-          this.arrayBuffer = fileReader.result;    
-          var data = new Uint8Array(this.arrayBuffer);    
-          var arr = new Array();    
-          for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
-          var bstr = arr.join("");    
-          var workbook = XLSX.read(bstr, {type:"binary"});    
-          var first_sheet_name = workbook.SheetNames[0];    
-          var worksheet = workbook.Sheets[first_sheet_name];    
-          console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
-          var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
-          this.filelist = arraylist; 
-          
-          // set read data to firebase 
-          for(let row of this.filelist){
-            this.setData.setTableData(this.buildingId, row)
-            .then(()=>{
-              console.log('data in firebase');
-              
-            })
-          }
-        } 
-      }
+  addfile(event){   
+    // Excel reader logic 
+    this.file= event.target.files[0];     
+    let fileReader = new FileReader();    
+    fileReader.readAsArrayBuffer(this.file);     
+    fileReader.onload = (e) => {    
+        this.arrayBuffer = fileReader.result;    
+        var data = new Uint8Array(this.arrayBuffer);    
+        var arr = new Array();    
+        for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
+        var bstr = arr.join("");    
+        var workbook = XLSX.read(bstr, {type:"binary"});    
+        var first_sheet_name = workbook.SheetNames[0];    
+        var worksheet = workbook.Sheets[first_sheet_name];    
+        console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
+        var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
+        this.filelist = arraylist; 
+        
+        // set read data to firebase 
+        for(let row of this.filelist){
+          this.setData.setTableData(this.buildingId, row)
+          .then(()=>{
+            console.log('data in firebase');
+            
+          })
+        }
+      } 
+    }
 
-    
 
     openDialog(action, obj){
       obj.action = action;
@@ -162,6 +166,40 @@ export class DashboardComponent implements OnInit {
     }
 
 
+  openDialogForExcel(action, obj){
+    // excel dialog
+    obj.action = action;
+    const dialogRef = this.dialog.open(ExcelDialogComponent,{
+      data: obj
+    });
+
+    // dialogRef.afterClosed().subscribe(result =>{
+    //   if(result.event === 'Cancel'){
+    //     // do nothing
+    //   }else if(result.event === 'Update'){
+    //     this.updateRowData(result.data);
+    //   }else if(result.event === 'Delete'){
+    //     this.deleteRowData(result.data);
+    //   }else if(result.event === 'Add'){
+    //     this.setRowData(result.data);
+    //   }else if(result.event === 'Payment'){ 
+    //     const data = {
+    //       pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
+    //       rowId: result.data.rowId,
+    //     };
+
+    //     const paymentData = {
+    //       paid_amount: result.data.payment,
+    //       timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+    //       author: 'admin'
+    //     };
+
+    //     this.updatePendingToPay(data, paymentData);
+    //   }
+    // })
+  }
+
+
     showUserRowProfile(row){
       this.holdData.userInfoInRow = row;
       this.router.navigate(['/tabla-pagos/', row.rowId])
@@ -192,7 +230,7 @@ export class DashboardComponent implements OnInit {
     }
 
     
-    sendPaymentRemainderEmail(){
+    sendPaymentRemainderMessage(){
       // send automatic reminder message
       const dataSource = this.dataSource.data;
       const userIdsToCompare = [];
@@ -279,6 +317,12 @@ export class DashboardComponent implements OnInit {
             })
           }
         })
+        // approval snackbar
+        this._snackBar.open('Mensajes Enviados Exitosamente', 'Cerrar', {
+          duration: 2000,
+          horizontalPosition: this.horizontalPosition,
+          verticalPosition: this.verticalPosition,
+        }); 
     }
 
 }

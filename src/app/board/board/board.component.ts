@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 // services
 import { FecthDataService } from '../../core/services/fecth-data.service';
-import { AuthService } from '../../core/services/auth.service';
 import { SetDataService } from '../../core/services/set-data.service';
 import { DeleteDataService } from '../../core/services/delete-data.service';
 import { HoldDataService } from '../../core/services/hold-data.service';
@@ -28,20 +27,25 @@ export class BoardComponent implements OnInit {
   destroy$:  Subject<void> = new Subject();
 
   userId:string;
+  buildingInfo: any;
   announcementList: Array<any> = []; // array of announcements used in the html
   backColor:string; // color of header background
   listOfBacgroundColors: Array<string> = ['#ADD8E6', '#F5B6C1', '#DDBDF1', '#90EE90'];
+  body:string;
+  title:string;
   constructor(
     public dialog: MatDialog,
     // services
     private fetchData: FecthDataService,
     private setData: SetDataService,
     private deleteData: DeleteDataService,
-    private holdData: HoldDataService
+    private holdData: HoldDataService,
+    private _snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
     this.userId = this.holdData.userId;
+    this.buildingInfo = this.holdData.buildingInfo;
     this.getAnnouncements();
   }
 
@@ -75,28 +79,23 @@ export class BoardComponent implements OnInit {
   }
 
 
-  creationAnnouncement(){
-    // create a new announcement
-    const data = {
-      action: 'create'
-    };
-    const dialogRef = this.dialog.open(BoardDialogComponent,{
-      data: data
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      const event = result.event;
-      if(event === 'create'){
-        const resultData = {
-          title: result.data.title,
-          body: result.data.body,
-          timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp()
+  createAnnouncement(){
+    console.log(this.title);
+    console.log(this.body);
+    const resultData = {
+      title: this.title,
+      body: this.body,
+      timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp()
         };
-        this.createAnnouncement(resultData);
-      }
-    })
-  }
+      
+     // creation of new announcement
+     this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, resultData)
+     .then(()=>{
+      // let snackBarRef = snackBar.open('Message archived');
 
+     })
+  }
+  
 
   viewAnnouncementBody(item, i){
     item.action = 'view';
@@ -133,9 +132,8 @@ export class BoardComponent implements OnInit {
   }
 
 
-  private createAnnouncement(data){
-    // creation of new announcement
-    this.setData.createAnnouncement(this.holdData.userInfo.buildingId, data);
-  }
-
+  // private createAnnouncement(data){
+  //   // creation of new announcement
+  //   this.setData.createAnnouncement(this.holdData.userInfo.buildingId, data);
+  // }
 }
