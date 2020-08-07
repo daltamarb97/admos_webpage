@@ -441,5 +441,17 @@ export class SetDataService {
 
   // --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*
 
+  // DIRECTORY SERVICES
+
+  addContact(data) {
+    // add new contact
+    let ref = this.db.collection('buildings')
+    .doc(data.buildingId)
+    .collection(data.type)
+    
+    return ref.add(data.info);
+  }
+
+  // END OF DIRECTORY SERVICES
   
 }

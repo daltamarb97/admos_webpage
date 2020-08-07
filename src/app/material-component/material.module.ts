@@ -17,6 +17,7 @@ import { ChatCreationDialogComponent } from './chat-creation-dialog/chat-creatio
 import { BoardDialogComponent } from './board-dialog/board-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { ExcelDialogComponent } from './excel-dialog/excel-dialog.component';
+import { ContactDialogComponent } from './contact-dialog/contact-dialog.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { ExcelDialogComponent } from './excel-dialog/excel-dialog.component';
     BoardDialogComponent,
     ProfileDialogComponent,
     ExcelDialogComponent,
+    ContactDialogComponent,
   ]
 })
 export class MaterialComponentsModule {}

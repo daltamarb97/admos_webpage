@@ -2,8 +2,11 @@
 
 <mat-card>
     <div class="p-20 bg-info position-relative">
-        <h4 class="card-title text-white m-0">Directorio</h4>
-        <h6 class="card-subtitle text-white m-0 op-5">Estos son los contactos de los propietarios de {{buildingInfo.name}}</h6>
+        <div>            
+            <h4 class="card-title text-white m-0">Directorio</h4>
+            <h6 class="card-subtitle text-white m-0 op-5">Estos son los contactos de los propietarios de {{buildingInfo.name}}</h6>
+        </div>
+        <button mat-raised-button color="warn" (click)="addContact()">Añadir contacto</button>
     </div>
     <div class="message-box contact-box p-20">
         <div class="message-widget contact-widget">

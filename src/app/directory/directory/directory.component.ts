@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 import { FecthDataService } from '../../core/services/fecth-data.service';
 import { HoldDataService } from '../../core/services/hold-data.service';
 import { SetDataService } from '../../core/services/set-data.service';
+
+import { ContactDialogComponent } from '../../material-component/contact-dialog/contact-dialog.component';
+
 
 @Component({
   selector: 'app-directory',
@@ -22,6 +26,8 @@ export class DirectoryComponent implements OnInit {
     private fecthDataService:FecthDataService,
     private setData: SetDataService,
     private holdData:HoldDataService,
+    // components
+    public dialog: MatDialog,
     private router: Router,
     ) {}
 
@@ -88,4 +94,44 @@ export class DirectoryComponent implements OnInit {
       }
     });
  }
+
+  addContact() {
+      const dialogRef = this.dialog.open(ContactDialogComponent);
+
+      dialogRef.afterClosed().subscribe(result =>{
+        if (result.event === 'close') {}
+        else if (result.event === 'emergency') {
+          const data = {
+            type: result.event,
+            info: {
+              name: result.data.nameEmerg,
+              phone: result.data.phoneEmerg
+            },
+            buildingId: this.user.buildingId
+          }
+          this.addContactFirebase(data);
+        } else if (result.event === 'other') {
+          const data = {
+            type: result.event,
+            info: {
+              name: result.data.nameOther,
+              phone: result.data.phoneOther,
+              description: result.data.description
+            },
+            buildingId: this.user.buildingId
+          } 
+          this.addContactFirebase(data);
+        }
+      })
+  }
+
+
+  private addContactFirebase(data) {
+    // firebase set new contact data
+    this.setData.addContact(data)
+      .then(() => {
+        console.log('guardado');
+        
+      })
+  }
 }

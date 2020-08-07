@@ -1,5 +1,7 @@
 .position-relative {
-	position: relative;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
 }
 
 .add-contact {
