@@ -19,33 +19,33 @@ export class AppComponent {
     private holdData: HoldDataService
   ){
 
-    this.authService.getCurrentUser()
-      .subscribe(user => {
-        this.holdData.userId = user.uid; 
-        this.getUserInfo();  
-      });
+    // this.authService.getCurrentUser()
+    //   .subscribe(user => {
+    //     this.holdData.userId = user.uid; 
+    //     this.getUserInfo();  
+    //   });
   }
 
 
-  private getUserInfo(){
-    // get user Info to be used
-    this.fetchData.getUserInfo(this.holdData.userId)
-    .subscribe(user=>{
-      // assign userInfo value to global variable
-      this.holdData.userInfo = user;
-      this.getBuildingInfo();
-    })
-  }
+  // private getUserInfo(){
+  //   // get user Info to be used
+  //   this.fetchData.getUserInfo(this.holdData.userId)
+  //   .subscribe(user=>{
+  //     // assign userInfo value to global variable
+  //     this.holdData.userInfo = user;
+  //     this.getBuildingInfo();
+  //   })
+  // }
 
 
-  private getBuildingInfo(){
-    // get building Info to be used
-    this.fetchData.getBuildingInfo(this.holdData.userInfo.buildingId)
-    .subscribe(building => {
-      // assign buildinginfo value to global variable
-      this.holdData.buildingInfo = building;  
-      this.holdData.hideSpinner = true; 
-      console.log('app component salio')  
-    })
-  }
+  // private getBuildingInfo(){
+  //   // get building Info to be used
+  //   this.fetchData.getBuildingInfo(this.holdData.userInfo.buildingId)
+  //   .subscribe(building => {
+  //     // assign buildinginfo value to global variable
+  //     this.holdData.buildingInfo = building;  
+  //     this.holdData.hideSpinner = true; 
+  //     console.log('app component salio')  
+  //   })
+  // }
 }

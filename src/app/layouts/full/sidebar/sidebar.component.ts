@@ -35,7 +35,9 @@ export class AppSidebarComponent implements OnDestroy {
     this.mobileQuery = media.matchMedia('(min-width: 768px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.username = `${this.holdData.userInfo.name} ${this.holdData.userInfo.lastname}`
+    if (this.holdData.userInfo) {
+      this.username = `${this.holdData.userInfo.name} ${this.holdData.userInfo.lastname}`
+    }
   }
 
   ngOnDestroy(): void {
