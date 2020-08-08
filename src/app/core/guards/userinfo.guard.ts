@@ -17,7 +17,6 @@ export class UserinfoGuard implements CanActivate {
   async canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot) {
-    console.log('me estoy ejecutando');
     if (!this.holdData.userId || !this.holdData.userInfo || !this.holdData.buildingInfo){
       try {
         await this.getBuildingInfo();
@@ -47,8 +46,6 @@ export class UserinfoGuard implements CanActivate {
   private async getUserInfo(){
     // get user Info to be used
     const userId = await this.getData();
-    console.log(userId);
-    
     return new Promise((resolve, reject) => {
       this.fetchData.getUserInfo(userId)
         .subscribe(user=>{

@@ -1,5 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { 
+  MatDialog, 
+  MatSnackBar, 
+  MatSnackBarHorizontalPosition, 
+  MatSnackBarVerticalPosition, 
+  MatTabGroup 
+} from '@angular/material';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -24,6 +30,8 @@ import { BoardDialogComponent } from '../../material-component/board-dialog/boar
   styleUrls: ['./board.component.scss']
 })
 export class BoardComponent implements OnInit {
+  @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
+
   destroy$:  Subject<void> = new Subject();
 
   userId:string;
@@ -33,6 +41,10 @@ export class BoardComponent implements OnInit {
   listOfBacgroundColors: Array<string> = ['#ADD8E6', '#F5B6C1', '#DDBDF1', '#90EE90'];
   body:string;
   title:string;
+  // snackbar variables
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   constructor(
     public dialog: MatDialog,
     // services
@@ -80,19 +92,23 @@ export class BoardComponent implements OnInit {
 
 
   createAnnouncement(){
-    console.log(this.title);
-    console.log(this.body);
     const resultData = {
       title: this.title,
       body: this.body,
       timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp()
-        };
-      
-     // creation of new announcement
-     this.setData.createAnnouncement(this.holdData.userInfo.activeBuilding, resultData)
-     .then(()=>{
-      // let snackBarRef = snackBar.open('Message archived');
+    };
 
+     // creation of new announcement
+     this.setData.createAnnouncement(this.holdData.userInfo.buildingId, resultData)
+     .then(()=>{
+      this._snackBar.open('Anuncio creado exitosamente', 'Cerrar', {
+        duration: 2000,
+        horizontalPosition: this.horizontalPosition,
+        verticalPosition: this.verticalPosition,
+      });
+      this.title = '';
+      this.body = '';
+      this.tabGroup.selectedIndex = 0;
      })
   }
   

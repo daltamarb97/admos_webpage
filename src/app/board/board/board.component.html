@@ -36,60 +36,16 @@
                     <mat-card-content>
                         <div class="d-flex no-blcok" *ngFor="let item of announcementList ; let i = index">
                             <div class="m-r-20">
-                                <img class="img-circle" width="50" src="assets/images/users/1.jpg" alt="Image"> </div>
+                                <img class="img-circle" width="50" src="assets/images/newspaper.png" alt="Image"> 
+                            </div>
                             <div class="p-b-20 b-b m-b-30">
                                 <h4 class="m-0">{{item.title}}
                                     <small class="text-muted">{{item.timestamp.toDate() | date }}</small>
                                 </h4>
-                                <p class="text-muted" >{{item.body.length}}</p>
-
                                 <p class="text-muted" >{{(item.body.length>50)? (item.body | slice:0:260)+'..':(item.body)}}</p>
-
-                                    <!-- <div fxFlex.gt-sm="20" fxFlex="100">
-                                        <img class="img-responsive rounded" src="assets/images/big/img2.jpg" alt="Image">
-                                    </div> -->
-                                        <button mat-button (click)="viewAnnouncementBody(item, i)">ver anuncio completo</button>
+                                <button mat-button (click)="viewAnnouncementBody(item, i)">ver anuncio completo</button>
                             </div>
                         </div>
-                         <div class="d-flex no-blcok">
-                            <div class="m-r-20">
-                                <img class="img-circle" width="50" src="assets/images/users/2.jpg" alt="Image"> </div>
-                            <div class="p-b-20 b-b m-b-30">
-                                <h4 class="m-0">Sunil joshi
-                                    <small class="text-muted">(3 minute ago)</small>
-                                </h4>
-                                <p class="text-muted">
-                                    
-                                    libero.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.</p>
-                                <button mat-raised-button color="primary">Check Now</button>
-                            </div>
-                        </div>
-                      <!--  <div class="d-flex no-blcok">
-                            <div class="m-r-20">
-                                <img class="img-circle" width="50" src="assets/images/users/3.jpg" alt="Image"> </div>
-                            <div class="p-b-20 b-b m-b-30">
-                                <h4 class="m-0">Vishal Bhatt
-                                    <small class="text-muted">(1 minute ago)</small>
-                                </h4>
-                                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.</p>
-                                <div fxLayout="row wrap">
-                                    <div fxFlex.gt-sm="20" fxFlex="100">
-                                        <img class="img-responsive rounded" src="assets/images/big/img1.jpg" alt="Image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex no-blcok">
-                            <div class="m-r-20">
-                                <img class="img-circle" width="50" src="assets/images/users/4.jpg" alt="Image"> </div>
-                            <div class="p-b-20 b-b m-b-30">
-                                <h4 class="m-0">Dhiren Adesara
-                                    <small class="text-muted">(1 minute ago)</small>
-                                </h4>
-                                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.</p>
-                                <button mat-raised-button color="warn">Check Now</button>
-                            </div>
-                        </div> -->
                     </mat-card-content>
                 </mat-tab>
                 <!-- End Tab 1 -->
@@ -108,12 +64,6 @@
                                         <input [(ngModel)]="title" [ngModelOptions]="{standalone: true}" matInput placeholder="Título">
                                     </mat-form-field>
                                 </div>
-                                <!-- column -->
-                               
-                              
-
-                            
-
                                 <!-- column -->
                                 <div fxFlex.gt-sm="100" fxFlex="100">
                                     <mat-form-field>
