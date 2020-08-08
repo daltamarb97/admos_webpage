@@ -12,6 +12,8 @@ import { MediaMatcher } from '@angular/cdk/layout';
 
 import { MenuItems } from '../../../shared/menu-items/menu-items';
 
+import { HoldDataService } from '../../../core/services/hold-data.service';
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -21,15 +23,19 @@ export class AppSidebarComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
 
   private _mobileQueryListener: () => void;
+  username: string;
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
     public menuItems: MenuItems,
+    // services
+    private holdData: HoldDataService,
   ) {
     this.mobileQuery = media.matchMedia('(min-width: 768px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.username = `${this.holdData.userInfo.name} ${this.holdData.userInfo.lastname}`
   }
 
   ngOnDestroy(): void {

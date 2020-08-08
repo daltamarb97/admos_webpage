@@ -166,38 +166,38 @@ export class DashboardComponent implements OnInit {
     }
 
 
-  openDialogForExcel(action, obj){
-    // excel dialog
-    obj.action = action;
-    const dialogRef = this.dialog.open(ExcelDialogComponent,{
-      data: obj
-    });
+  // openDialogForExcel(action, obj){
+  //   // excel dialog
+  //   obj.action = action;
+  //   const dialogRef = this.dialog.open(ExcelDialogComponent,{
+  //     data: obj
+  //   });
 
-    // dialogRef.afterClosed().subscribe(result =>{
-    //   if(result.event === 'Cancel'){
-    //     // do nothing
-    //   }else if(result.event === 'Update'){
-    //     this.updateRowData(result.data);
-    //   }else if(result.event === 'Delete'){
-    //     this.deleteRowData(result.data);
-    //   }else if(result.event === 'Add'){
-    //     this.setRowData(result.data);
-    //   }else if(result.event === 'Payment'){ 
-    //     const data = {
-    //       pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
-    //       rowId: result.data.rowId,
-    //     };
+  //   // dialogRef.afterClosed().subscribe(result =>{
+  //   //   if(result.event === 'Cancel'){
+  //   //     // do nothing
+  //   //   }else if(result.event === 'Update'){
+  //   //     this.updateRowData(result.data);
+  //   //   }else if(result.event === 'Delete'){
+  //   //     this.deleteRowData(result.data);
+  //   //   }else if(result.event === 'Add'){
+  //   //     this.setRowData(result.data);
+  //   //   }else if(result.event === 'Payment'){ 
+  //   //     const data = {
+  //   //       pending_to_pay: parseInt(obj.pending_to_pay) - parseInt(result.data.payment),
+  //   //       rowId: result.data.rowId,
+  //   //     };
 
-    //     const paymentData = {
-    //       paid_amount: result.data.payment,
-    //       timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
-    //       author: 'admin'
-    //     };
+  //   //     const paymentData = {
+  //   //       paid_amount: result.data.payment,
+  //   //       timestamp: this.holdData.convertJSDateIntoFirestoreTimestamp(),
+  //   //       author: 'admin'
+  //   //     };
 
-    //     this.updatePendingToPay(data, paymentData);
-    //   }
-    // })
-  }
+  //   //     this.updatePendingToPay(data, paymentData);
+  //   //   }
+  //   // })
+  // }
 
 
     showUserRowProfile(row){

@@ -57,7 +57,7 @@ export class ContactDialogComponent {
       this.phoneOther = null;
       this.description = null;
       this.showError = false;
-    } else if (value.value === 'other') {
+    } else if (value.value === 'others') {
       this.nameEmerg = null; 
       this.phoneEmerg = null;
       this.showError = false;

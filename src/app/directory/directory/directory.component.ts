@@ -110,7 +110,7 @@ export class DirectoryComponent implements OnInit {
             buildingId: this.user.buildingId
           }
           this.addContactFirebase(data);
-        } else if (result.event === 'other') {
+        } else if (result.event === 'others') {
           const data = {
             type: result.event,
             info: {

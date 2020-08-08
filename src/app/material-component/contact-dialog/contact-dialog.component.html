@@ -3,7 +3,7 @@
         <mat-label>Tipo de Contacto</mat-label>
         <mat-select [(ngModel)]="typeOfContact" (selectionChange)="changeType($event)">
             <mat-option value="emergency">Contacto de emergencia</mat-option>
-            <mat-option value="other">Otro</mat-option>
+            <mat-option value="others">Otro</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -19,7 +19,7 @@
         </mat-form-field>  
     </div>
 
-    <div *ngIf="typeOfContact === 'other'">
+    <div *ngIf="typeOfContact === 'others'">
         <mat-form-field appearance="fill">
             <mat-label>Nombre</mat-label>
             <input matInput type="text" [(ngModel)]="nameOther">
@@ -41,59 +41,8 @@
         <div mat-dialog-actions>
             <button mat-button (click)="onNoClick()">Cerrar</button>
             <button mat-button mat-flat-button color="accent" (click)="addEmergencyContact()" *ngIf="typeOfContact === 'emergency'">Confirmar</button>
-            <button mat-button mat-flat-button color="accent" (click)="addOtherContact()" *ngIf="typeOfContact === 'other'">Confirmar</button>
+            <button mat-button mat-flat-button color="accent" (click)="addOtherContact()" *ngIf="typeOfContact === 'others'">Confirmar</button>
         </div>
     </footer>
     
 </div>
-
-
-<!-- <div *ngIf="action === 'view'">
-    <div mat-dialog-content>
-        <div>
-            <mat-form-field>
-                <input type="text" placeholder="Título" matInput [(ngModel)]="local_data.title" [readonly]="isReadOnly">
-            </mat-form-field>
-    
-            <mat-form-field>
-                <textarea cols="1" rows="10" placeholder="Cuerpo del Anuncio" matInput [(ngModel)]="local_data.body" [readonly]="isReadOnly"></textarea>
-            </mat-form-field>
-    
-            <mat-form-field>
-                <input type="text" placeholder="fecha de creación" matInput [(ngModel)]="local_data.timestamp" readonly>
-            </mat-form-field>
-        </div>
-    </div> -->
-            
-        <!-- Buttons Footer -->
-<!--             
-    <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">Cerrar</button>
-        <button mat-button mat-flat-button color="accent" (click)="allowEdition()" *ngIf="isReadOnly">Editar Anuncio</button>
-        <button mat-button mat-flat-button color="warn" (click)="deleteAnnouncement()" *ngIf="isReadOnly">Eliminar Anuncio</button>
-        <button mat-button mat-flat-button color="warn" (click)="editAnnouncement()" *ngIf="isReadOnly===false">Confirmar</button>
-    </div>
-</div> -->
-
-
-<!-- <div *ngIf="action === 'create'">
-    <div mat-dialog-content>
-        <div>
-            <mat-form-field>
-                <input type="text" placeholder="Título" matInput [(ngModel)]="local_data.title">
-            </mat-form-field>
-    
-            <mat-form-field>
-                <textarea cols="1" rows="10" placeholder="Cuerpo del Anuncio" matInput [(ngModel)]="local_data.body"></textarea>
-            </mat-form-field>
-        </div>
-    </div> -->
-            
-        <!-- Buttons Footer -->
-            
-    <!-- <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">Cerrar</button>
-        <button mat-button mat-flat-button color="accent" (click)="createAnnouncement()">Confirmar Anuncio</button>
-    </div>
-</div> -->
-    

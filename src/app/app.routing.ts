@@ -6,6 +6,7 @@ import { FullComponent } from './layouts/full/full.component';
 // guards
 import {  EmailVerifiedGuardService } from './core/guards/email-verified.service';
 import { CurrentUserGuard } from './core/guards/current-user-guard.service';
+import { UserInfoGuard } from './core/guards/user-info.guard';
 
 
 export const AppRoutes: Routes = [
@@ -27,7 +28,8 @@ export const AppRoutes: Routes = [
         path: 'tabla-pagos',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService
+          EmailVerifiedGuardService,
+          UserInfoGuard 
         ],
         loadChildren: 
           () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
@@ -36,7 +38,8 @@ export const AppRoutes: Routes = [
         path: 'canales-comunicacion',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService
+          EmailVerifiedGuardService,
+          UserInfoGuard
         ],
         loadChildren:
           () => import('./comunications/comunications.module').then(m => m.ComunicationsModule)
@@ -45,7 +48,8 @@ export const AppRoutes: Routes = [
         path: 'pizarra',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService
+          EmailVerifiedGuardService,
+          UserInfoGuard
         ],
         loadChildren:
           () => import('./board/board.module').then(m => m.BoardModule)
@@ -54,7 +58,8 @@ export const AppRoutes: Routes = [
         path: 'directorio',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService
+          EmailVerifiedGuardService,
+          UserInfoGuard
         ],
         loadChildren:
           () => import('./directory/directory.module').then(m => m.DirectoryModule)
@@ -63,7 +68,8 @@ export const AppRoutes: Routes = [
         path: 'perfil',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService
+          EmailVerifiedGuardService,
+          UserInfoGuard 
         ],
         loadChildren:
           () => import('./profile/profile.module').then(m => m.ProfileModule)
