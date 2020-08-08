@@ -11,9 +11,6 @@ import { UserinfoGuard } from './core/guards/userinfo.guard';
 export const AppRoutes: Routes = [
   {
     path: '',
-    canActivate: [
-      UserinfoGuard   
-    ],
     component: FullComponent,
     children: [
       {
@@ -23,6 +20,9 @@ export const AppRoutes: Routes = [
       },
       {
         path: '',
+        canActivate: [
+          UserinfoGuard
+        ],
         loadChildren: 
           () => import('./material-component/material.module').then(m => m.MaterialComponentsModule)
       },
@@ -30,11 +30,9 @@ export const AppRoutes: Routes = [
         path: 'tabla-pagos',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService,     
+          EmailVerifiedGuardService,
+          UserinfoGuard     
         ],
-        // resolve: [
-        //   UserinfoGuard
-        // ],
         loadChildren: 
           () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       },
@@ -43,10 +41,8 @@ export const AppRoutes: Routes = [
         canActivate: [
           CurrentUserGuard,
           EmailVerifiedGuardService,
+          UserinfoGuard
         ],
-        // resolve: [
-        //   UserinfoGuard
-        // ],
         loadChildren:
           () => import('./comunications/comunications.module').then(m => m.ComunicationsModule)
       },
@@ -54,11 +50,9 @@ export const AppRoutes: Routes = [
         path: 'pizarra',
         canActivate: [
           CurrentUserGuard,
-          EmailVerifiedGuardService,    
+          EmailVerifiedGuardService, 
+          UserinfoGuard   
         ],
-        // resolve: [
-        //   UserinfoGuard
-        // ],
         loadChildren:
           () => import('./board/board.module').then(m => m.BoardModule)
       }, 
@@ -67,10 +61,8 @@ export const AppRoutes: Routes = [
         canActivate: [
           CurrentUserGuard,
           EmailVerifiedGuardService,
+          UserinfoGuard
         ],
-        // resolve: [
-        //   UserinfoGuard
-        // ],
         loadChildren:
           () => import('./directory/directory.module').then(m => m.DirectoryModule)
       },
@@ -79,10 +71,8 @@ export const AppRoutes: Routes = [
         canActivate: [
           CurrentUserGuard,
           EmailVerifiedGuardService, 
+          UserinfoGuard
         ],
-        // resolve: [
-        //   UserinfoGuard
-        // ],
         loadChildren:
           () => import('./profile/profile.module').then(m => m.ProfileModule)
       },
